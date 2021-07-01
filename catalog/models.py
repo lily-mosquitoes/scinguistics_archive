@@ -46,7 +46,7 @@ class Lesson(models.Model):
     type = models.ManyToManyField('Type', help_text='Select a type of lesson')
     tags = models.ManyToManyField('Tag', help_text='Select tags for the lesson')
     date_and_time = models.DateTimeField(blank=True, null=True, unique=True, help_text='Date and time of the recording (autofilled from CRAIG/GIARC link)')
-    recording = models.FileField(blank=True, null=True, upload_to='uploads', storage=BackblazeB2Storage, help_text='Recording link from the CDN (autofilled from CRAIG/GIARC link)')
+    # recording = models.FileField(blank=True, null=True, upload_to='uploads', storage=BackblazeB2Storage, help_text='Recording link from the CDN (autofilled from CRAIG/GIARC link)')
 
     def __str__(self):
         return f"{self.student}'s lesson with {self.teacher} - {self.date_and_time.isoformat()}"
