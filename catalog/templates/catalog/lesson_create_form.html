@@ -1,0 +1,73 @@
+{% extends "base_generic.html" %}
+
+{% block content %}
+  <form action="" method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+    <table>
+      <tr class="fieldWrapper">
+        <th>{{ form.teacher.label_tag }}</th>
+        <td>
+            {{ form.teacher.errors }}
+            {{ form.teacher }}
+            <a href="{% url 'teacher-create' %}" class="btn btn-success btn-sm"><strong>+</strong></a>
+            <br>{{ form.teacher.help_text }}
+        </td>
+      </tr>
+      <tr class="fieldWrapper">
+        <th>{{ form.student.label_tag }}</th>
+        <td>
+            {{ form.student.errors }}
+            {{ form.student }}
+            <a href="{% url 'student-create' %}" class="btn btn-success btn-sm"><strong>+</strong></a>
+            <br>{{ form.student.help_text }}
+        </td>
+      </tr>
+      <tr class="fieldWrapper">
+        <th>{{ form.type.label_tag }}</th>
+        <td>
+            {{ form.type.errors }}
+            {{ form.type }}
+            <a href="{% url 'type-create' %}" class="btn btn-success btn-sm"><strong>+</strong></a>
+            <br>{{ form.type.help_text }}
+        </td>
+      </tr>
+      <tr class="fieldWrapper">
+        <th>{{ form.tags.label_tag }}</th>
+        <td>
+            {{ form.tags.errors }}
+            {{ form.tags }}
+            <a href="{% url 'tag-create' %}?next={{ request.path|urlencode }}" class="btn btn-success btn-sm"><strong>+</strong></a>
+            <br>{{ form.tags.help_text }}
+        </td>
+      </tr>
+      <hr>
+      <p><strong>Please, only input a CRAIG/GIARC link OR upload a file (uploading a file requires setting the date and time)</strong></p>
+      <tr class="fieldWrapper">
+        <th>{{ form.recording_processing_link.label_tag }}</th>
+        <td>
+            {{ form.recording_processing_link.errors }}
+            {{ form.recording_processing_link }}
+            <br>{{ form.recording_processing_link.help_text }}
+        </td>
+      </tr>
+      <tr class="fieldWrapper">
+        <th>{{ form.form_date_and_time.label_tag }}</th>
+        <td>
+            {{ form.form_date_and_time.errors }}
+            {{ form.form_date_and_time }}
+            <br>{{ form.form_date_and_time.help_text }}
+        </td>
+      </tr>
+      <tr class="fieldWrapper">
+        <th>{{ form.form_recording_file.label_tag }}</th>
+        <td>
+            {{ form.form_recording_file.errors }}
+            {{ form.form_recording_file }}
+            <br>{{ form.form_recording_file.help_text }}
+        </td>
+      </tr>
+    </table>
+    {{ form.non_field_errors }}
+    <input type="submit" value="Submit">
+  </form>
+{% endblock %}

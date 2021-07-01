@@ -1,0 +1,23 @@
+{% extends "base_generic.html" %}
+
+{% block content %}
+  <h1>Lesson Tag List</h1>
+  <hr>
+  {% if perms.catalog.add_tag %}
+  <h2>Staff: <a href="{% url 'teacher-create' %}" class="btn btn-success">Add New Tag</a></h2>
+  <hr>
+  {% endif %}
+  {% if tag_list %}
+  <ul>
+    {% for tag in tag_list %}
+      <li>
+        <p>{{ tag.name }}</p>
+        <a href="{% url 'tag-update' tag.id %}" class="btn btn-success btn-sm">Edit Text</a>
+        <a href="{% url 'tag-delete' tag.id %}" class="btn btn-danger btn-sm">Delete</a>
+      </li>
+    {% endfor %}
+  </ul>
+  {% else %}
+    <p>There are no lesson tags in the archive.</p>
+  {% endif %}
+{% endblock %}

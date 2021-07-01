@@ -1,0 +1,15 @@
+{% extends "base_generic.html" %}
+
+{% block content %}
+  <h1>Scinguistics Archive</h1>
+  <p>Welcome to Scinguistics Archive, a website developed by <em>Lílian</em>!</p>
+  <h2>Archive records</h2>
+  <p>The archive has the following record counts:</p>
+  <ul>
+    <li><strong>Students:</strong> {{ num_students }}</li>
+    <li><strong>Lessons:</strong> {{ num_lessons }}</li>
+    {% for type, count in list_num_lessons_per_type %}
+        <li style="margin-left:1em"><strong>{{ type }}:</strong> {{ count }}</li>
+    {% endfor %}
+  </ul>
+{% endblock %}

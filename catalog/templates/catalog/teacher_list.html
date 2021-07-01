@@ -1,0 +1,23 @@
+{% extends "base_generic.html" %}
+
+{% block content %}
+  <h1>Teacher List</h1>
+  <hr>
+  {% if perms.catalog.add_teacher %}
+  <h2>Staff: <a href="{% url 'teacher-create' %}" class="btn btn-success">Add New Teacher</a></h2>
+  <hr>
+  {% endif %}
+  {% if teacher_list %}
+  <ul>
+    {% for teacher in teacher_list %}
+      <li>
+        <p>{{ teacher.name }}</p>
+        <a href="{% url 'teacher-update' teacher.id %}" class="btn btn-success btn-sm">Edit Name</a>
+        <a href="{% url 'teacher-delete' teacher.id %}" class="btn btn-danger btn-sm">Delete</a>
+      </li>
+    {% endfor %}
+  </ul>
+  {% else %}
+    <p>There are no teachers in the archive.</p>
+  {% endif %}
+{% endblock %}

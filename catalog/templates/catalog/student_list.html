@@ -1,0 +1,21 @@
+{% extends "base_generic.html" %}
+
+{% block content %}
+  <h1>Student List</h1>
+  <hr>
+  {% if perms.catalog.add_student %}
+  <h2>Staff: <a href="{% url 'student-create' %}" class="btn btn-success">Add New Student</a></h2>
+  <hr>
+  {% endif %}
+  {% if student_list %}
+  <ul>
+    {% for student in student_list %}
+      <li>
+        <a href="{{ student.get_absolute_url }}">{{ student.name }}</a>
+      </li>
+    {% endfor %}
+  </ul>
+  {% else %}
+    <p>There are no students in the archive.</p>
+  {% endif %}
+{% endblock %}

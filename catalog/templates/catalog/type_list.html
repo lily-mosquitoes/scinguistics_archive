@@ -1,0 +1,23 @@
+{% extends "base_generic.html" %}
+
+{% block content %}
+  <h1>Lesson Type List</h1>
+  <hr>
+  {% if perms.catalog.add_type %}
+  <h2>Staff: <a href="{% url 'type-create' %}" class="btn btn-success">Add New Type</a></h2>
+  <hr>
+  {% endif %}
+  {% if type_list %}
+  <ul>
+    {% for type in type_list %}
+      <li>
+        <p>{{ type.name }}</p>
+        <a href="{% url 'type-update' type.id %}" class="btn btn-success btn-sm">Edit Text</a>
+        <a href="{% url 'type-delete' type.id %}" class="btn btn-danger btn-sm">Delete</a>
+      </li>
+    {% endfor %}
+  </ul>
+  {% else %}
+    <p>There are no lesson types in the archive.</p>
+  {% endif %}
+{% endblock %}

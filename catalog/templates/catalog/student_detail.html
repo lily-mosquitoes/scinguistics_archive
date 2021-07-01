@@ -1,0 +1,21 @@
+{% extends "base_generic.html" %}
+
+{% block content %}
+  <h1>{{ student.name }}'s lessons</h1>
+  <hr>
+  {% if perms.catalog.add_lesson %}
+  <h2>Staff:
+    <a href="{% url 'student-update' student.id %}" class="btn btn-success">Edit Student's Name</a>
+    <a href="{% url 'student-delete' student.id %}" class="btn btn-danger">Delete Student</a>
+  </h2>
+  <hr>
+  {% endif %}
+
+  <div style="margin-left:20px;margin-top:20px">
+    <p>
+      {% for lesson in lesson_list %}
+      <li><a href="{{ lesson.get_absolute_url }}">{{ lesson.date_and_time }}</a> (Teacher: {{ lesson.teacher}})</li>
+      {% endfor %}
+    </p>
+  </div>
+{% endblock %}

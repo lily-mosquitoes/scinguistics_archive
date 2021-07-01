@@ -1,0 +1,47 @@
+{% extends "base_generic.html" %}
+
+{% block extra_head %}
+  {% if PROCESSING == True %}
+    <meta http-equiv="refresh" content="120">
+  {% endif %}
+{% endblock %}
+
+{% block content %}
+{% if user.groups.all.0.name == 'Staff Member' or lesson.teacher.name != 'Charles' or user.socialaccount_set.all.0.extra_data.pledge_level != None %}
+  <h1><a href="{{ lesson.student.get_absolute_url }}">{{ lesson.student }}</a>'s lesson - {{ lesson.date_and_time }}</h1>
+  <hr>
+  {% if perms.catalog.change_lesson and perms.catalog.delete_lesson %}
+  <h2>Staff:
+    <a href="{% url 'lesson-update' lesson.id %}" class="btn btn-success">Edit Lesson</a>
+    <a href="{% url 'lesson-delete' lesson.id %}" class="btn btn-danger">Delete Lesson</a>
+  </h2>
+  <hr>
+  {% endif %}
+
+  <p><strong>Teacher:</strong> {{ lesson.teacher }}</p>
+  <p><strong>Type:</strong> {{ lesson.type.all|join:", " }}</p>
+  <p><strong>Tags:</strong> {{ lesson.tags.all|join:", " }}</p>
+
+  <div style="margin-left:20px;margin-top:20px">
+    <h4>Recording</h4>
+     <hr>
+     {% if PROCESSING == True %}
+       <p style="color:Orange"><strong>Recording in processing, please wait</strong></p>
+     {% else %}
+       {% if lesson.recording %}
+         <p>
+         <audio controls>
+           <source src="{{ lesson.recording.url }}" type="audio/mpeg">
+           Your browser does not support the audio element.
+         </audio>
+         </p>
+         <p><a href="{{ lesson.recording.url }}" class="btn btn-primary" download>download mp3</a></p>
+       {% else %}
+         <p style="color:Tomato"><strong>No recording in database</strong></p>
+       {% endif %}
+     {% endif %}
+  </div>
+{% else %}
+  <p style="color:Tomato"><strong>Sorry, you do not have the permission to see this content, visit <a href="https://www.patreon.com/CRAMDvoicelessons/">CRAMD Voice Lesson's Patreon page</a> to get access :)</strong></p>
+{% endif %}
+{% endblock %}

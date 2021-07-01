@@ -1,0 +1,25 @@
+{% extends "base_generic.html" %}
+
+{% block content %}
+  <h1>Lesson List</h1>
+  <hr>
+  {% if perms.catalog.add_lesson %}
+  <h2>Staff: <a href="{% url 'lesson-create' %}" class="btn btn-success">Create New Lesson Record</a></h2>
+  <hr>
+  {% endif %}
+  {% if lesson_list %}
+  <ul>
+    <!-- {% load tz %}
+    {% localtime on %} -->
+    {% for lesson in lesson_list %}
+      <li>
+        <a href="{{ lesson.get_absolute_url }}">{{ lesson.student }}'s lesson - {{ lesson.date_and_time }}</a> (Teacher: {{lesson.teacher}})
+      </li>
+      <!-- type instead: lesson.date_and_time|localtime -->
+    {% endfor %}
+    <!-- {% endlocaltime %} -->
+  </ul>
+  {% else %}
+    <p>There are no lessons in the archive.</p>
+  {% endif %}
+{% endblock %}
