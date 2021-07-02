@@ -4,7 +4,7 @@
   <h1>Lesson Tag List</h1>
   <hr>
   {% if perms.catalog.add_tag %}
-  <h2>Staff: <a href="{% url 'teacher-create' %}" class="btn btn-success">Add New Tag</a></h2>
+  <h2>Staff: <a href="{% url 'tag-create' %}" class="btn btn-success">Add New Tag</a></h2>
   <hr>
   {% endif %}
   {% if tag_list %}
