@@ -283,11 +283,12 @@ class LessonCreate(PermissionRequiredMixin, CreateView):
                     print('PROBLEM SOMEWHERE 2')
                     raise e
             else:
-                recording_exists = False
-                while not recording_exists:
-                    lesson = Lesson.objects.get(date_and_time=direct_upload_date_and_time)
-                    if lesson.recording:
-                        recording_exists = True
+                pass
+                # recording_exists = False
+                # while not recording_exists:
+                #     lesson = Lesson.objects.get(date_and_time=direct_upload_date_and_time)
+                #     if lesson.recording:
+                #         recording_exists = True
 
         else:
             raise Exception
