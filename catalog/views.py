@@ -231,19 +231,24 @@ class LessonCreate(PermissionRequiredMixin, CreateView):
                     # download zip file from CRAIG/GIARC url
                     r = urlretrieve(file_url, f"{file_name}.zip")
                     # unzip
+                    print('download finished')
                     ZipFile(f"{file_name}.zip").extractall(file_name)
                     os.remove(f"{file_name}.zip")
                     # process files to single track
+                    print('processing started')
                     shutil.copyfile('process_recording.sh', f"{file_name}/process_recording.sh")
                     os.system(f"sh {file_name}/process_recording.sh")
+                    print('processing ended!!!')
                     ### results in file_name/craig.m4a file
                     # save lesson recording to database
                     lesson = Lesson.objects.get(date_and_time=lesson_date_and_time)
                     with open(f"{file_name}/craig.m4a", 'rb') as recording:
                         lesson.recording.save(lesson.get_recording_stamp(), File(recording))
                 except Exception as e:
+                    print('PROBLEM SOMEWHERE')
                     raise e
                 # cleanup
+                print('cleanup started')
                 # remove downloaded files
                 os.system(f"rm -r {file_name}")
                 # terminate forked process to avoid problems
