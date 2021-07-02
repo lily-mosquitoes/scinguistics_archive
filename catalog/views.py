@@ -264,8 +264,30 @@ class LessonCreate(PermissionRequiredMixin, CreateView):
             # save lesson date_and_time and recording
             lesson = form.save(commit=False)
             lesson.date_and_time = direct_upload_date_and_time
-            lesson.recording = File(direct_upload_file, name=lesson.get_recording_stamp())
+            # lesson.recording = File(direct_upload_file, name=lesson.get_recording_stamp())
             form.save()
+
+            # need to fork to bypass heroku's 30s request timeout
+            # kill db connections to start forked process
+            db.connections.close_all()
+            pid = os.fork()
+            if pid == 0:
+                try:
+                    # show PID (for debugging)
+                    print('################### DEBUG 2 ##################')
+                    print('PID: ', os.getpid())
+                    # save lesson recording to database
+                    lesson = Lesson.objects.get(date_and_time=direct_upload_date_and_time)
+                    lesson.recording.save(lesson.get_recording_stamp(), File(direct_upload_file))
+                except Exception as e:
+                    print('PROBLEM SOMEWHERE 2')
+                    raise e
+            else:
+                recording_exists = False
+                while not recording_exists:
+                    lesson = Lesson.objects.get(date_and_time=direct_upload_date_and_time)
+                    if lesson.recording:
+                        recording_exists = True
 
         else:
             raise Exception
