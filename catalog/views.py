@@ -351,7 +351,8 @@ class LessonUpdate(PermissionRequiredMixin, UpdateView):
         # save lesson date_and_time
         lesson = form.save(commit=False)
         lesson.date_and_time = new_date_and_time
-        lesson.recording = File(new_recording, name=lesson.get_recording_stamp())
+        if new_recording != None:
+            lesson.recording = File(new_recording, name=lesson.get_recording_stamp())
         form.save()
 
         return super(LessonUpdate, self).form_valid(form)
