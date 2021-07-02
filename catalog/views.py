@@ -276,8 +276,10 @@ class LessonCreate(PermissionRequiredMixin, CreateView):
                     # show PID (for debugging)
                     print('################### DEBUG 2 ##################')
                     print('PID: ', os.getpid())
+                    print('DATETIME: ', direct_upload_date_and_time)
                     # save lesson recording to database
                     lesson = Lesson.objects.get(date_and_time=direct_upload_date_and_time)
+                    print('LESSON: ', lesson)
                     # lesson.recording.save(lesson.get_recording_stamp(), File(direct_upload_file))
                     lesson.recording = File(direct_upload_file, name=lesson.get_recording_stamp())
                     lesson.save()
