@@ -185,6 +185,14 @@ class TypeUpdate(PermissionRequiredMixin, UpdateView):
     model = Type
     fields = ['name']
 
+    def form_valid(self, form):
+        type = form.save(commit=False)
+        type.name = form.cleaned_data.get('name')
+        type.save()
+
+        next = self.request.POST.get('next') or reverse_lazy('types')
+        return HttpResponseRedirect(next)
+
 class TypeDelete(PermissionRequiredMixin, DeleteView):
     permission_required = 'catalog.delete_type'
     model = Type
@@ -209,6 +217,14 @@ class TeacherUpdate(PermissionRequiredMixin, UpdateView):
     model = Teacher
     fields = ['name']
 
+    def form_valid(self, form):
+        teacher = form.save(commit=False)
+        teacher.name = form.cleaned_data.get('name')
+        teacher.save()
+
+        next = self.request.POST.get('next') or reverse_lazy('teachers')
+        return HttpResponseRedirect(next)
+
 class TeacherDelete(PermissionRequiredMixin, DeleteView):
     permission_required = 'catalog.delete_teacher'
     model = Teacher
@@ -220,13 +236,13 @@ class StudentCreate(PermissionRequiredMixin, CreateView):
     model = Student
     fields = ['name']
 
-    def form_valid(self, form):
-        student = form.save(commit=False)
-        student.name = form.cleaned_data.get('name')
-        student.save()
-
-        next = self.request.POST.get('next') or reverse_lazy('students')
-        return HttpResponseRedirect(next)
+    # def form_valid(self, form):
+    #     student = form.save(commit=False)
+    #     student.name = form.cleaned_data.get('name')
+    #     student.save()
+    #
+    #     next = self.request.POST.get('next') or reverse_lazy('students')
+    #     return HttpResponseRedirect(next)
 
 class StudentUpdate(PermissionRequiredMixin, UpdateView):
     permission_required = 'catalog.change_student'
