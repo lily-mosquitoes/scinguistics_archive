@@ -280,14 +280,15 @@ class LessonCreate(PermissionRequiredMixin, CreateView):
                     # save lesson recording to database
                     lesson = Lesson.objects.get(date_and_time=direct_upload_date_and_time)
                     print('LESSON: ', lesson)
-                    with direct_upload_file.open() as recording:
-                        lesson.recording.save(lesson.get_recording_stamp(), File(recording))
+                    lesson.recording.save(lesson.get_recording_stamp(), File(direct_upload_file))
                     # lesson.recording = File(direct_upload_file, name=lesson.get_recording_stamp())
                     # lesson.save()
                     print('finished direct upload of file')
                 except Exception as e:
                     print('PROBLEM SOMEWHERE 2')
                     raise e
+                # terminate forked process to avoid problems
+                os._exit(os.EX_OK)
             else:
                 pass
                 # recording_exists = False
