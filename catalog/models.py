@@ -5,7 +5,7 @@ from django_backblaze_b2 import BackblazeB2Storage
 class Tag(models.Model):
     """Model for lesson tags"""
 
-    name = models.CharField(max_length=100, help_text='Enter a new tag name')
+    name = models.CharField(max_length=100, unique=True, help_text='Enter a new tag name')
 
     def __str__(self):
         return self.name
@@ -13,7 +13,7 @@ class Tag(models.Model):
 class Type(models.Model):
     """Model for lesson type (e.g. Voice Feminization)"""
 
-    name = models.CharField(max_length=100, help_text='Enter a new lesson type')
+    name = models.CharField(max_length=100, unique=True, help_text='Enter a new lesson type')
 
     def __str__(self):
         return self.name
@@ -21,7 +21,7 @@ class Type(models.Model):
 class Teacher(models.Model):
     """Model for the student name"""
 
-    name = models.CharField(max_length=200, help_text='Enter a new teacher')
+    name = models.CharField(max_length=200, unique=True, help_text='Enter a new teacher')
 
     def __str__(self):
         return self.name
@@ -29,7 +29,7 @@ class Teacher(models.Model):
 class Student(models.Model):
     """Model for the student name"""
 
-    name = models.CharField(max_length=200, help_text='Enter a new student')
+    name = models.CharField(max_length=200, unique=True, help_text='Enter a new student')
 
     def __str__(self):
         return self.name
