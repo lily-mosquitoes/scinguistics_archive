@@ -276,7 +276,7 @@ class LessonCreate(PermissionRequiredMixin, CreateView):
                     # save lesson recording to database
                     lesson = Lesson.objects.get(date_and_time=lesson_date_and_time)
                     with open(f"{file_name}/craig.m4a", 'rb') as recording:
-                        lesson.recording.save(lesson.get_recording_stamp(), File(recording))
+                        lesson.recording.save(f"{lesson.get_recording_stamp()}.m4a", File(recording))
                 except Exception as e:
                     print('PROBLEM SOMEWHERE')
                     raise e
@@ -316,7 +316,7 @@ class LessonCreate(PermissionRequiredMixin, CreateView):
                     open(file_name, 'wt').write('direct upload')
                     # save lesson recording to database
                     lesson = Lesson.objects.get(date_and_time=direct_upload_date_and_time)
-                    lesson.recording.save(lesson.get_recording_stamp(), File(direct_upload_file))
+                    lesson.recording.save(f"{lesson.get_recording_stamp()}.m4a", File(direct_upload_file))
                     print('finished direct upload of file')
                 except Exception as e:
                     print('PROBLEM SOMEWHERE 2')

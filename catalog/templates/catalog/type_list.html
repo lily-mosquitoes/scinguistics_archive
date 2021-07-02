@@ -12,8 +12,10 @@
     {% for type in type_list %}
       <li>
         <p>{{ type.name }}</p>
-        <a href="{% url 'type-update' type.id %}" class="btn btn-success btn-sm">Edit Text</a>
-        <a href="{% url 'type-delete' type.id %}" class="btn btn-danger btn-sm">Delete</a>
+        {% if perms.catalog.change_type and perms.catalog.delete_type %}
+          <a href="{% url 'type-update' type.id %}" class="btn btn-success btn-sm">Edit Text</a>
+          <a href="{% url 'type-delete' type.id %}" class="btn btn-danger btn-sm">Delete</a>
+        {% endif %}
       </li>
     {% endfor %}
   </ul>
