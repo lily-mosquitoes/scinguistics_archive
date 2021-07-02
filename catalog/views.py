@@ -153,6 +153,14 @@ class TagUpdate(PermissionRequiredMixin, UpdateView):
     model = Tag
     fields = ['name']
 
+    def form_valid(self, form):
+        tag = form.save(commit=False)
+        tag.name = form.cleaned_data.get('name')
+        tag.save()
+
+        next = self.request.POST.get('next') or reverse_lazy('tags')
+        return HttpResponseRedirect(next)
+
 class TagDelete(PermissionRequiredMixin, DeleteView):
     permission_required = 'catalog.delete_tag'
     model = Tag
