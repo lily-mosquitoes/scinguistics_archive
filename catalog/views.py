@@ -353,7 +353,7 @@ class LessonUpdate(PermissionRequiredMixin, UpdateView):
         lesson.date_and_time = new_date_and_time
         if new_recording != None:
             lesson.recording = File(new_recording, name=lesson.get_recording_stamp())
-        form.save()
+        lesson.save()
 
         return super(LessonUpdate, self).form_valid(form)
 
