@@ -278,7 +278,10 @@ class LessonCreate(PermissionRequiredMixin, CreateView):
                     print('PID: ', os.getpid())
                     # save lesson recording to database
                     lesson = Lesson.objects.get(date_and_time=direct_upload_date_and_time)
-                    lesson.recording.save(lesson.get_recording_stamp(), File(direct_upload_file))
+                    # lesson.recording.save(lesson.get_recording_stamp(), File(direct_upload_file))
+                    lesson.recording = File(direct_upload_file, name=lesson.get_recording_stamp())
+                    lesson.save()
+                    print('finished direct upload of file')
                 except Exception as e:
                     print('PROBLEM SOMEWHERE 2')
                     raise e
