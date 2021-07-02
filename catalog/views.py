@@ -14,6 +14,7 @@ from zipfile import ZipFile
 from django.core.files import File
 import time
 from django.http import HttpResponseRedirect
+from django.core.files.uploadedfile import InMemoryUploadedFile
 
 def index(request):
     """Home Page view function"""
@@ -351,8 +352,8 @@ class LessonUpdate(PermissionRequiredMixin, UpdateView):
         # save lesson date_and_time
         lesson = form.save(commit=False)
         lesson.date_and_time = new_date_and_time
-        if new_recording != None:
-            lesson.recording = File(new_recording, name=lesson.get_recording_stamp())
+        if type(new_recording) is InMemoryUploadedFile:
+            lesson.recording = File(new_recording, name=f"{lesson.get_recording_stamp()}.m4a")
         lesson.save()
 
         return super(LessonUpdate, self).form_valid(form)
