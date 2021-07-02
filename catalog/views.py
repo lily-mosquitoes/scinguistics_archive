@@ -4,7 +4,7 @@ from django.views import generic
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views.generic.edit import CreateView, UpdateView, DeleteView
 from django.urls import reverse_lazy
-from catalog.forms import LessonCreateForm
+from catalog.forms import TagForm, TypeForm, TeacherForm, StudentForm, LessonCreateForm
 from django.contrib.auth.mixins import PermissionRequiredMixin
 from urllib.request import urlretrieve
 from django import db
@@ -15,6 +15,7 @@ from django.core.files import File
 import time
 from django.http import HttpResponseRedirect
 from django.core.files.uploadedfile import InMemoryUploadedFile
+from django.core.exceptions import ValidationError
 
 def index(request):
     """Home Page view function"""
@@ -138,7 +139,7 @@ class TagListView(LoginRequiredMixin, generic.ListView):
 class TagCreate(PermissionRequiredMixin, CreateView):
     permission_required = 'catalog.add_tag'
     model = Tag
-    fields = ['name']
+    form_class = TagForm
 
     def form_valid(self, form):
         tag = form.save(commit=False)
@@ -151,7 +152,7 @@ class TagCreate(PermissionRequiredMixin, CreateView):
 class TagUpdate(PermissionRequiredMixin, UpdateView):
     permission_required = 'catalog.change_tag'
     model = Tag
-    fields = ['name']
+    form_class = TagForm
 
     def form_valid(self, form):
         tag = form.save(commit=False)
@@ -170,7 +171,7 @@ class TagDelete(PermissionRequiredMixin, DeleteView):
 class TypeCreate(PermissionRequiredMixin, CreateView):
     permission_required = 'catalog.add_type'
     model = Type
-    fields = ['name']
+    form_class = TypeForm
 
     def form_valid(self, form):
         type = form.save(commit=False)
@@ -183,7 +184,7 @@ class TypeCreate(PermissionRequiredMixin, CreateView):
 class TypeUpdate(PermissionRequiredMixin, UpdateView):
     permission_required = 'catalog.change_type'
     model = Type
-    fields = ['name']
+    form_class = TypeForm
 
     def form_valid(self, form):
         type = form.save(commit=False)
@@ -202,7 +203,7 @@ class TypeDelete(PermissionRequiredMixin, DeleteView):
 class TeacherCreate(PermissionRequiredMixin, CreateView):
     permission_required = 'catalog.add_teacher'
     model = Teacher
-    fields = ['name']
+    form_class = TeacherForm
 
     def form_valid(self, form):
         teacher = form.save(commit=False)
@@ -215,7 +216,7 @@ class TeacherCreate(PermissionRequiredMixin, CreateView):
 class TeacherUpdate(PermissionRequiredMixin, UpdateView):
     permission_required = 'catalog.change_teacher'
     model = Teacher
-    fields = ['name']
+    form_class = TeacherForm
 
     def form_valid(self, form):
         teacher = form.save(commit=False)
@@ -234,20 +235,28 @@ class TeacherDelete(PermissionRequiredMixin, DeleteView):
 class StudentCreate(PermissionRequiredMixin, CreateView):
     permission_required = 'catalog.add_student'
     model = Student
-    fields = ['name']
+    form_class = StudentForm
 
-    # def form_valid(self, form):
-    #     student = form.save(commit=False)
-    #     student.name = form.cleaned_data.get('name')
-    #     student.save()
-    #
-    #     next = self.request.POST.get('next') or reverse_lazy('students')
-    #     return HttpResponseRedirect(next)
+    def form_valid(self, form):
+        student = form.save(commit=False)
+        student.name = form.cleaned_data.get('name')
+        student.save()
+
+        next = self.request.POST.get('next') or reverse_lazy('students')
+        return HttpResponseRedirect(next)
 
 class StudentUpdate(PermissionRequiredMixin, UpdateView):
     permission_required = 'catalog.change_student'
     model = Student
-    fields = ['name']
+    form_class = StudentForm
+
+    def form_valid(self, form):
+        student = form.save(commit=False)
+        student.name = form.cleaned_data.get('name')
+        student.save()
+
+        next = self.request.POST.get('next') or reverse_lazy('students')
+        return HttpResponseRedirect(next)
 
 class StudentDelete(PermissionRequiredMixin, DeleteView):
     permission_required = 'catalog.delete_student'

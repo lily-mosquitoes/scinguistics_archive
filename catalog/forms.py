@@ -1,9 +1,65 @@
 from django import forms
-from .models import Lesson
+from .models import Tag, Type, Teacher, Student, Lesson
 from django.core.exceptions import ValidationError
 from urllib.request import urlopen
 import json
 from datetime import datetime
+
+class TagForm(forms.ModelForm):
+
+    def clean_name(self):
+        # make sure name is unique (case insensitive)
+        name = self.cleaned_data.get('name')
+        if name.upper() in [obj.name.upper() for obj in Tag.objects.all()]:
+            raise ValidationError('Tag with this name already exists')
+
+        return cleaned_data
+
+    class Meta:
+        model = Tag
+        fields = ['name']
+
+class TypeForm(forms.ModelForm):
+
+    def clean_name(self):
+        # make sure name is unique (case insensitive)
+        name = self.cleaned_data.get('name')
+        if name.upper() in [obj.name.upper() for obj in Type.objects.all()]:
+            raise ValidationError('Type with this name already exists')
+
+        return cleaned_data
+
+    class Meta:
+        model = Type
+        fields = ['name']
+
+class TeacherForm(forms.ModelForm):
+
+    def clean_name(self):
+        # make sure name is unique (case insensitive)
+        name = self.cleaned_data.get('name')
+        if name.upper() in [obj.name.upper() for obj in Teacher.objects.all()]:
+            raise ValidationError('Type with this name already exists')
+
+        return cleaned_data
+
+    class Meta:
+        model = Teacher
+        fields = ['name']
+
+class StudentForm(forms.ModelForm):
+
+    def clean_name(self):
+        # make sure name is unique (case insensitive)
+        name = self.cleaned_data.get('name')
+        if name.upper() in [obj.name.upper() for obj in Student.objects.all()]:
+            raise ValidationError('Type with this name already exists')
+
+        return cleaned_data
+
+    class Meta:
+        model = Student
+        fields = ['name']
 
 class LessonCreateForm(forms.ModelForm):
 
