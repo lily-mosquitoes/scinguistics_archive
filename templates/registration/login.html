@@ -1,6 +1,7 @@
 {% extends "base_generic.html" %}
 
 {% block content %}
+{% load socialaccount %}
 
   {% if next %}
     {% if user.is_authenticated %}
