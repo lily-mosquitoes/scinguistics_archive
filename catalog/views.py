@@ -164,7 +164,7 @@ class TagUpdate(PermissionRequiredMixin, UpdateView):
 class TagDelete(PermissionRequiredMixin, DeleteView):
     permission_required = 'catalog.delete_tag'
     model = Tag
-    success_url = reverse_lazy('')
+    success_url = reverse_lazy('tags')
 
 # type
 class TypeCreate(PermissionRequiredMixin, CreateView):
@@ -196,7 +196,7 @@ class TypeUpdate(PermissionRequiredMixin, UpdateView):
 class TypeDelete(PermissionRequiredMixin, DeleteView):
     permission_required = 'catalog.delete_type'
     model = Type
-    success_url = reverse_lazy('')
+    success_url = reverse_lazy('types')
 
 # teacher
 class TeacherCreate(PermissionRequiredMixin, CreateView):
