@@ -267,6 +267,9 @@ class LessonCreate(PermissionRequiredMixin, CreateView):
             # lesson.recording = File(direct_upload_file, name=lesson.get_recording_stamp())
             form.save()
 
+            # file name for creating a file for view to display "processing" message
+            file_name = f"recording-{direct_upload_date_and_time.isoformat()}"
+
             # need to fork to bypass heroku's 30s request timeout
             # kill db connections to start forked process
             db.connections.close_all()
@@ -276,26 +279,26 @@ class LessonCreate(PermissionRequiredMixin, CreateView):
                     # show PID (for debugging)
                     print('################### DEBUG 2 ##################')
                     print('PID: ', os.getpid())
-                    print('DATETIME: ', direct_upload_date_and_time)
+                    # create the file for view to display "processing" message
+                    open(file_name, 'wt').write('direct upload')
                     # save lesson recording to database
                     lesson = Lesson.objects.get(date_and_time=direct_upload_date_and_time)
-                    print('LESSON: ', lesson)
                     lesson.recording.save(lesson.get_recording_stamp(), File(direct_upload_file))
-                    # lesson.recording = File(direct_upload_file, name=lesson.get_recording_stamp())
-                    # lesson.save()
                     print('finished direct upload of file')
                 except Exception as e:
                     print('PROBLEM SOMEWHERE 2')
                     raise e
+                # cleanup
+                os.system(f"rm {file_name}")
                 # terminate forked process to avoid problems
+                # IT LITERALLY DOES NOT SAVE THE DATABASE IF THE PROCESS DOESN'T EXIT UGGGGGGGGGGGGGGGGGGGGGH
                 os._exit(os.EX_OK)
             else:
-                pass
-                # recording_exists = False
-                # while not recording_exists:
-                #     lesson = Lesson.objects.get(date_and_time=direct_upload_date_and_time)
-                #     if lesson.recording:
-                #         recording_exists = True
+                file_exists = False
+                while not file_exists:
+                    for name in os.listdir('.'):
+                        if file_name in name:
+                            file_exists = True
 
         else:
             raise Exception
