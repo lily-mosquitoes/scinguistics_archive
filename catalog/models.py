@@ -10,6 +10,9 @@ class Tag(models.Model):
     def __str__(self):
         return self.name
 
+    class Meta:
+        ordering = ['name']
+
 class Type(models.Model):
     """Model for lesson type (e.g. Voice Feminization)"""
 
@@ -38,6 +41,9 @@ class Student(models.Model):
         """returns the url to access the record of this student"""
         return reverse('student-detail', args=[str(self.id)])
 
+    class Meta:
+        ordering = ['name']
+
 class Lesson(models.Model):
     """Model for the lesson entry"""
 
@@ -57,3 +63,6 @@ class Lesson(models.Model):
     def get_absolute_url(self):
         """returns the url to access the record of this lesson"""
         return reverse('lesson-detail', args=[str(self.id)])
+
+    class Meta:
+        ordering = ['date_and_time']
