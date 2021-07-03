@@ -13,7 +13,7 @@ class TagForm(forms.ModelForm):
         if name.upper() in [obj.name.upper() for obj in Tag.objects.all()]:
             raise ValidationError('Tag with this name already exists')
 
-        return cleaned_data
+        return name
 
     class Meta:
         model = Tag
@@ -27,7 +27,7 @@ class TypeForm(forms.ModelForm):
         if name.upper() in [obj.name.upper() for obj in Type.objects.all()]:
             raise ValidationError('Type with this name already exists')
 
-        return cleaned_data
+        return name
 
     class Meta:
         model = Type
@@ -41,7 +41,7 @@ class TeacherForm(forms.ModelForm):
         if name.upper() in [obj.name.upper() for obj in Teacher.objects.all()]:
             raise ValidationError('Type with this name already exists')
 
-        return cleaned_data
+        return name
 
     class Meta:
         model = Teacher
@@ -55,7 +55,7 @@ class StudentForm(forms.ModelForm):
         if name.upper() in [obj.name.upper() for obj in Student.objects.all()]:
             raise ValidationError('Type with this name already exists')
 
-        return cleaned_data
+        return name
 
     class Meta:
         model = Student
