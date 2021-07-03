@@ -1,8 +1,9 @@
 {% extends "base_generic.html" %}
 
 {% block content %}
+  {% load static %}
   <h1>Scinguistics Archive</h1>
-  <p>Welcome to Scinguistics Archive, a project developed by <span style="color:HotPink" class="cutetooltip">Lílian & Emilia<span class="cutetooltiptext">💓</span></span> and made possible by <a href="{% url 'thanks' %}">Charles' patreon supporters</a>! Thank you!</p>
+  <p>Welcome to Scinguistics Archive, a project developed by <span style="color:HotPink" class="cutetooltip">Lílian & Emilia<span class="cutetooltiptext"><img src="{% static 'images/lovekiss.gif' %}" style="max-width:3em"></span></span> and made possible by <a href="{% url 'thanks' %}">Charles' patreon supporters</a>! Thank you!</p>
   <h2>Archive records</h2>
   <p>The archive has the following record counts:</p>
   <ul>

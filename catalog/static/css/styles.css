@@ -11,7 +11,7 @@
 
 .cutetooltip .cutetooltiptext {
     visibility: hidden;
-    width: 2em;
+    width: 4em;
     color: black;
     text-align: center;
     border: 1px solid black;
@@ -19,9 +19,9 @@
     padding: 5px 0;
     position: absolute;
     z-index: 1;
-    bottom: 150%;
+    bottom: 110%;
     left: 50%;
-    margin-left: -1.2em;
+    margin-left: -2.2em;
 }
 
 .cutetooltip .cutetooltiptext::after {
