@@ -3,3 +3,38 @@
     padding: 0;
     list-style: none;
 }
+
+.cutetooltip {
+    position: relative;
+    display: inline-block;
+}
+
+.cutetooltip .cutetooltiptext {
+    visibility: hidden;
+    width: 2em;
+    color: black;
+    text-align: center;
+    border: 1px solid black;
+    border-radius: 10px;
+    padding: 5px 0;
+    position: absolute;
+    z-index: 1;
+    bottom: 150%;
+    left: 50%;
+    margin-left: -1.2em;
+}
+
+.cutetooltip .cutetooltiptext::after {
+    content: "";
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    margin-left: -5px;
+    border-width: 5px;
+    border-style: solid;
+    border-color: black transparent transparent transparent;
+}
+
+.cutetooltip:hover .cutetooltiptext {
+    visibility: visible;
+}
