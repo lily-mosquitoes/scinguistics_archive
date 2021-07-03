@@ -65,4 +65,4 @@ class Lesson(models.Model):
         return reverse('lesson-detail', args=[str(self.id)])
 
     class Meta:
-        ordering = ['date_and_time']
+        ordering = ['-date_and_time']
