@@ -1,6 +1,9 @@
 from django.db import models
 from django.urls import reverse
 from django_backblaze_b2 import BackblazeB2Storage
+from django.db.models.signals import pre_delete
+from django.dispatch import receiver
+from django.db.models import ProtectedError
 
 class Tag(models.Model):
     """Model for lesson tags"""
@@ -41,8 +44,8 @@ class Student(models.Model):
 class Lesson(models.Model):
     """Model for the lesson entry"""
 
-    teacher = models.ForeignKey('Teacher', on_delete=models.SET_NULL, null=True)
-    student = models.ForeignKey('Student', on_delete=models.SET_NULL, null=True)
+    teacher = models.ForeignKey('Teacher', on_delete=models.PROTECT, null=True)
+    student = models.ForeignKey('Student', on_delete=models.PROTECT, null=True)
     type = models.ManyToManyField('Type', help_text='Select a type of lesson')
     tags = models.ManyToManyField('Tag', help_text='Select tags for the lesson')
     date_and_time = models.DateTimeField(blank=True, null=True, unique=True, help_text='Date and time of the recording (autofilled from CRAIG/GIARC link)')
@@ -57,3 +60,11 @@ class Lesson(models.Model):
     def get_absolute_url(self):
         """returns the url to access the record of this lesson"""
         return reverse('lesson-detail', args=[str(self.id)])
+
+# signals
+@receiver(pre_delete, sender=Tag) # activates when Tag instance gets deleted
+def pre_delete_tag(sender, instance, **kwargs):
+    # instance is instance of Tag
+    # lesson_tags = [obj.tags.all() for obj in Lesson.objects.all()]
+    if True:
+        raise ProtectedError('cannot delete tag', instance)
