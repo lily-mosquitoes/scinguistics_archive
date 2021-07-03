@@ -4,11 +4,19 @@
 
 <h1>Delete Lesson Tag</h1>
 
-<p>Are you sure you want to delete the lesson tag: {{ tag }}?</p>
+{% if error %}
+  <p class="error">{{ error }}</p>
+    <a href="{% url 'tags' %}">
+      <input type="submit" value="Understood.">
+    </a>
 
-<form action="" method="POST">
-  {% csrf_token %}
-  <input type="submit" value="Yes, delete.">
-</form>
+{% else %}
+  <p>Are you sure you want to delete the lesson tag: {{ tag }}?</p>
 
+  <form action="" method="POST">
+    {% csrf_token %}
+    <input type="submit" value="Yes, delete.">
+  </form>
+
+{% endif %}
 {% endblock %}

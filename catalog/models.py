@@ -1,9 +1,6 @@
 from django.db import models
 from django.urls import reverse
 from django_backblaze_b2 import BackblazeB2Storage
-from django.db.models.signals import pre_delete
-from django.dispatch import receiver
-from django.db.models import ProtectedError
 
 class Tag(models.Model):
     """Model for lesson tags"""
@@ -60,11 +57,3 @@ class Lesson(models.Model):
     def get_absolute_url(self):
         """returns the url to access the record of this lesson"""
         return reverse('lesson-detail', args=[str(self.id)])
-
-# signals
-@receiver(pre_delete, sender=Tag) # activates when Tag instance gets deleted
-def pre_delete_tag(sender, instance, **kwargs):
-    # instance is instance of Tag
-    # lesson_tags = [obj.tags.all() for obj in Lesson.objects.all()]
-    if True:
-        raise ProtectedError('cannot delete tag', instance)

@@ -4,11 +4,19 @@
 
 <h1>Delete Teacher</h1>
 
-<p>Are you sure you want to delete the teacher: {{ teacher }}?</p>
+{% if error %}
+  <p class="error">{{ error }}</p>
+    <a href="{% url 'teachers' %}">
+      <input type="submit" value="Understood.">
+    </a>
 
-<form action="" method="POST">
-  {% csrf_token %}
-  <input type="submit" value="Yes, delete.">
-</form>
+{% else %}
+  <p>Are you sure you want to delete the teacher: {{ teacher }}?</p>
 
+  <form action="" method="POST">
+    {% csrf_token %}
+    <input type="submit" value="Yes, delete.">
+  </form>
+
+{% endif %}
 {% endblock %}

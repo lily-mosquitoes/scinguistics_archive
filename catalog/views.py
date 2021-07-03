@@ -16,6 +16,7 @@ import time
 from django.http import HttpResponseRedirect
 from django.core.files.uploadedfile import InMemoryUploadedFile
 from django.core.exceptions import ValidationError
+from django.db.models import ProtectedError
 
 def index(request):
     """Home Page view function"""
@@ -167,6 +168,24 @@ class TagDelete(PermissionRequiredMixin, DeleteView):
     model = Tag
     success_url = reverse_lazy('tags')
 
+    def delete(self, request, *args, **kwargs):
+        self.object = self.get_object()
+        success_url = self.get_success_url()
+
+        # check if lessons are using the instance
+        in_use = list()
+        for lesson in Lesson.objects.all():
+            in_use.extend([tag.name for tag in lesson.tags.all()])
+
+        print(in_use)
+        if self.object.name in in_use:
+            context = self.get_context_data(object=self.object, error='Cannot delete in use object instance, delete all uses first')
+            return self.render_to_response(context)
+        else:
+            self.object.delete()
+
+        return HttpResponseRedirect(success_url)
+
 # type
 class TypeCreate(PermissionRequiredMixin, CreateView):
     permission_required = 'catalog.add_type'
@@ -198,6 +217,24 @@ class TypeDelete(PermissionRequiredMixin, DeleteView):
     permission_required = 'catalog.delete_type'
     model = Type
     success_url = reverse_lazy('types')
+
+    def delete(self, request, *args, **kwargs):
+        self.object = self.get_object()
+        success_url = self.get_success_url()
+
+        # check if lessons are using the instance
+        in_use = list()
+        for lesson in Lesson.objects.all():
+            in_use.extend([type.name for type in lesson.types.all()])
+
+        print(in_use)
+        if self.object.name in in_use:
+            context = self.get_context_data(object=self.object, error='Cannot delete in use object instance, delete all uses first')
+            return self.render_to_response(context)
+        else:
+            self.object.delete()
+
+        return HttpResponseRedirect(success_url)
 
 # teacher
 class TeacherCreate(PermissionRequiredMixin, CreateView):
@@ -231,6 +268,18 @@ class TeacherDelete(PermissionRequiredMixin, DeleteView):
     model = Teacher
     success_url = reverse_lazy('teachers')
 
+    def delete(self, request, *args, **kwargs):
+        self.object = self.get_object()
+        success_url = self.get_success_url()
+        try:
+            self.object.delete()
+
+        except ProtectedError:
+            context = self.get_context_data(object=self.object, error='Cannot delete in use object instance, delete all uses first')
+            return self.render_to_response(context)
+
+        return HttpResponseRedirect(success_url)
+
 # student
 class StudentCreate(PermissionRequiredMixin, CreateView):
     permission_required = 'catalog.add_student'
@@ -262,6 +311,18 @@ class StudentDelete(PermissionRequiredMixin, DeleteView):
     permission_required = 'catalog.delete_student'
     model = Student
     success_url = reverse_lazy('students')
+
+    def delete(self, request, *args, **kwargs):
+        self.object = self.get_object()
+        success_url = self.get_success_url()
+        try:
+            self.object.delete()
+
+        except ProtectedError:
+            context = self.get_context_data(object=self.object, error='Cannot delete in use object instance, delete all uses first')
+            return self.render_to_response(context)
+
+        return HttpResponseRedirect(success_url)
 
 # lesson
 class LessonCreate(PermissionRequiredMixin, CreateView):
