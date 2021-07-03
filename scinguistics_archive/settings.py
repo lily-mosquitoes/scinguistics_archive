@@ -90,7 +90,7 @@ DATABASES = {
     }
 }
 
-# Heroku: Update database configuration from environ var $DATABASE_URL.
+# Set database configuration from environ var $DATABASE_URL.
 db_from_env = dj_database_url.config()
 DATABASES['default'].update(db_from_env)
 
