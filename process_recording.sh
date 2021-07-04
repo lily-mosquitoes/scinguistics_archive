@@ -571,10 +571,6 @@ ffm() {
     fi
 }
 
-printf 'This is the Craig audio processor. License information is in this script file.\n\n'
-
-printf 'Please choose an output format:\n [F]LAC\n [A]udacity project\n [w]av\n [M]PEG-4 AAC (M4A)\n A[L]AC\n'
-
 ODIR=""
 FFORMAT="ipod"
 CODEC="aac"
