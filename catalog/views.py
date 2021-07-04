@@ -84,6 +84,7 @@ class LessonListView(LoginRequiredMixin, generic.ListView):
         ALL_PROCESSES = [name.replace('.zip', '') for name in os.listdir('.') if 'recording' in name]
 
         context['ALL_PROCESSES'] = ALL_PROCESSES
+        context['EMPTY_LIST'] = list()
 
         return context
 

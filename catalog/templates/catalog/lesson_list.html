@@ -1,7 +1,7 @@
 {% extends "base_generic.html" %}
 
 {% block extra_head %}
-  {% if ALL_PROCESSES != [] %}
+  {% if ALL_PROCESSES != EMPTY_LIST %}
     <meta http-equiv="refresh" content="60">
   {% endif %}
 {% endblock %}
