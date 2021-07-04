@@ -1,5 +1,11 @@
 {% extends "base_generic.html" %}
 
+{% block extra_head %}
+  {% if ALL_PROCESSES != [] %}
+    <meta http-equiv="refresh" content="60">
+  {% endif %}
+{% endblock %}
+
 {% block content %}
   <h1>Lesson List</h1>
   <hr>
@@ -12,9 +18,19 @@
     <!-- {% load tz %}
     {% localtime on %} -->
     {% for lesson in lesson_list %}
+      {% if lesson.recording %}
       <li>
         <a href="{{ lesson.get_absolute_url }}">{{ lesson.student }}'s lesson - {{ lesson.date_and_time }}</a> (Teacher: {{lesson.teacher}})
       </li>
+      {% elif lesson.recording_processing_filestorage_name in ALL_PROCESSES %}
+      <li>
+        <a style="color:Orange" href="{{ lesson.get_absolute_url }}">{{ lesson.student }}'s lesson - {{ lesson.date_and_time }}</a> (Teacher: {{lesson.teacher}})
+      </li>
+      {% else %}
+      <li>
+        <a style="color:Tomato" href="{{ lesson.get_absolute_url }}">{{ lesson.student }}'s lesson - {{ lesson.date_and_time }}</a> (Teacher: {{lesson.teacher}})
+      </li>
+      {% endif %}
       <!-- type instead: lesson.date_and_time|localtime -->
     {% endfor %}
     <!-- {% endlocaltime %} -->

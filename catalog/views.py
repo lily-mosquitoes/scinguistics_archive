@@ -77,6 +77,16 @@ class LessonListView(LoginRequiredMixin, generic.ListView):
     model = Lesson
     paginate_by = 10
 
+    def get_context_data(self, **kwargs):
+        # Call the base implementation first to get the context
+        context = super(LessonListView, self).get_context_data(**kwargs)
+        # Add data to the context
+        ALL_PROCESSES = [name.replace('.zip', '') for name in os.listdir('.') if 'recording' in name]
+
+        context['ALL_PROCESSES'] = ALL_PROCESSES
+
+        return context
+
 class LessonDetailView(LoginRequiredMixin, generic.DetailView):
     """Lesson Detail view function"""
 

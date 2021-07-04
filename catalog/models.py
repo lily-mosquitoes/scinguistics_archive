@@ -60,6 +60,10 @@ class Lesson(models.Model):
     def get_recording_stamp(self):
         return f"{self.student}-s_lesson_with_{self.teacher}_-_{int(self.date_and_time.timestamp())}"
 
+    @property
+    def recording_processing_filestorage_name(self):
+        return f"recording-{self.date_and_time.isoformat()}"
+
     def get_absolute_url(self):
         """returns the url to access the record of this lesson"""
         return reverse('lesson-detail', args=[str(self.id)])
