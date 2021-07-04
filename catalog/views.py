@@ -365,7 +365,7 @@ class LessonCreate(PermissionRequiredMixin, CreateView):
                     # process files to single track
                     print('processing started')
                     shutil.copyfile('process_recording.sh', f"{file_name}/process_recording.sh")
-                    os.system(f"sh {file_name}/process_recording.sh &> /dev/null")
+                    os.system(f"sh {file_name}/process_recording.sh > /dev/null 2>&1")
                     print('processing ended!!!')
                     ### results in file_name/craig.m4a file
                     # save lesson recording to database
