@@ -365,6 +365,7 @@ class LessonCreate(PermissionRequiredMixin, CreateView):
                     # process files to single track
                     print('processing started')
                     shutil.copyfile('process_recording.sh', f"{file_name}/process_recording.sh")
+                    # Heroku server only acceps standard Bourne/POSIX shell syntax (hence the use of 2>&1 for piping stdio)
                     os.system(f"sh {file_name}/process_recording.sh > /dev/null 2>&1")
                     print('processing ended!!!')
                     ### results in file_name/craig.m4a file
