@@ -62,7 +62,7 @@ class Lesson(models.Model):
 
     @property
     def recording_processing_filestorage_name(self):
-        return f"recording-{self.date_and_time.isoformat()}"
+        return f"lesson-recording-{self.date_and_time.isoformat()}"
 
     def get_absolute_url(self):
         """returns the url to access the record of this lesson"""

@@ -81,7 +81,7 @@ class LessonListView(LoginRequiredMixin, generic.ListView):
         # Call the base implementation first to get the context
         context = super(LessonListView, self).get_context_data(**kwargs)
         # Add data to the context
-        ALL_PROCESSES = [name.replace('.zip', '') for name in os.listdir('.') if 'recording' in name]
+        ALL_PROCESSES = [name.replace('.zip', '') for name in os.listdir('.') if 'lesson-recording-' in name]
 
         context['ALL_PROCESSES'] = ALL_PROCESSES
         context['EMPTY_LIST'] = list()
@@ -100,7 +100,7 @@ class LessonDetailView(LoginRequiredMixin, generic.DetailView):
         # set variable
         PROCESSING = False
         # check if files are still present
-        file_name = f"recording-{context['lesson'].date_and_time.isoformat()}"
+        file_name = context['lesson'].recording_processing_filestorage_name
         for name in os.listdir('.'):
             if file_name in name:
                 PROCESSING = True

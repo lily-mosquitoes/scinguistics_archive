@@ -107,7 +107,7 @@ class LessonCreateForm(forms.ModelForm):
             lesson_date_and_time = datetime.fromisoformat(info['startTime'].replace('Z', '+00:00'))
             # get file
             file_url = f"{base_url}&fetch=cooked&format=powersfxu"
-            file_name = f"recording-{lesson_date_and_time.isoformat()}"
+            file_name = f"lesson-recording-{lesson_date_and_time.isoformat()}"
         else:
             raise ValidationError('Expired CRAIG/GIARC URL')
 
