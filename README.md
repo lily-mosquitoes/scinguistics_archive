@@ -4,7 +4,7 @@ The Scinguistics Archive is a WebApp developed to serve the [Scinguistics](https
 
 This WebApp is built using the [Django web framework](https://www.djangoproject.com/), and uses [PostgreSQL](https://www.postgresql.org/) as a database and [Backblaze B2](https://www.backblaze.com/b2/cloud-storage.html) as a storage solution for audio recordings. It utilizes [django-allauth](https://www.intenct.nl/projects/django-allauth/) for user authentication via the [Patreon API](https://docs.patreon.com/#introduction).
 
-The WebApp available at https://archive.cramdvoicelessons.blog/, and it was developed by [Lílian](https://github.com/lily-mosquitoes) and [Emilia](https://github.com/EmiliaBlasten) for the [Scinguistics team](https://cramdvoicelessons.blog/) with support from [CRAMDVoiceLessons](https://www.patreon.com/CRAMDvoicelessons).
+The WebApp is available at https://archive.cramdvoicelessons.blog/, and it was developed by [Lílian](https://github.com/lily-mosquitoes) and [Emilia](https://github.com/EmiliaBlasten) for the [Scinguistics team](https://cramdvoicelessons.blog/) with support from [CRAMDVoiceLessons](https://www.patreon.com/CRAMDvoicelessons).
 
 ## specifications
 
@@ -80,3 +80,11 @@ Now the deployed WebApp should be available at Heroku's provided url, as a short
 
 Remember to add and commit changes using git (`git add .`, `git commit -m "commit message"`), and re-deploy to Heroku with `git push heroku main`.
 It is recommended to schedule [backups for the database](https://devcenter.heroku.com/articles/heroku-postgres-backups).
+
+## copyright
+
+The following copyright applies to this work:
+- The script file `process_recording.sh` is a modified version of [Yahweasel's craig powersfx.sh script](https://github.com/Yahweasel/craig/blob/master/cook/powersfx.sh), and it is licensed under the GNU Lesser General Public License v2.1 or any later version of the License.
+- The image file `catalog/static/images/lovekiss.gif` was retrieved from the image sharing service [Tenor](https://tenor.com/) ([original image](https://tenor.com/view/crush-lesbian-kiss-love-hearts-gif-13732215)), and it is shared through the deployed WebApp under their [terms of service](https://tenor.com/legal-terms).
+- The image file `catalog/static/images/scinguistics_icon.webp` is an asset of [Scinguistics](https://cramdvoicelessons.blog/) and all rights are reserved to the owner, permission for use must be explicitly granted from the owner ([see contact page](https://cramdvoicelessons.blog/contact/)).
+- The remainder of the code and assets in this repository is licensed under the GNU Affero General Public Licence v3.0 or any later version  of the License (see [LICENSE.md](https://github.com/lily-mosquitoes/scinguistics_archive/blob/main/LICENSE.md)).
