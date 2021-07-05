@@ -12,16 +12,17 @@ This WebApp is hosted with [Heroku](https://www.heroku.com/about) provisioned wi
 
 ## configuration variables
 
-Invoked in `scinguistics_archive/settings.py`, these should be exported as environment variables
-    - `DJANGO_ALLOWED_HOSTS`
-    - `DJANGO_DEBUG`
-    - `DJANGO_SECRET_KEY`
-    - `DATABASE_URL` ([howto](https://github.com/kennethreitz/dj-database-url#url-schema))
-    - `BACKBLAZE_KEY_ID`
-    - `BACKBLAZE_KEY`
-    - `BACKBLAZE_BUCKET`
-    - `PATREON_CLIENT_ID`
-    - `PATREON_CLIENT_SECRET`
+Invoked in `scinguistics_archive/settings.py`, these should be exported as environment variables and values of IDs and Keys should be kept secret.
+    - `DJANGO_ALLOWED_HOSTS` (string of host names separated by comma, e.g. `"example.herokuapp.com,127.0.0.1"`)
+    - `DJANGO_DEBUG` (set "True" on test server, "False" on production)
+    - `DJANGO_SECRET_KEY` (a large random string, you can use [python's secrets.token_urlsafe](https://docs.python.org/3/library/secrets.html#secrets.token_urlsafe) to produce one)
+    - `DATABASE_URL` (parsed by [dj-database-url](https://github.com/kennethreitz/dj-database-url), [see schema](https://github.com/kennethreitz/dj-database-url#url-schema))
+    - `BACKBLAZE_KEY_ID` (from your B2 Application Key [non-master], [see Backblaze B2 docs](https://www.backblaze.com/b2/docs/application_keys.html))
+    - `BACKBLAZE_KEY` (from your B2 Application Key [non-master], [see Backblaze B2 docs](https://www.backblaze.com/b2/docs/application_keys.html))
+    - `BACKBLAZE_BUCKET` (your B2 Bucket Name, [see Backblaze B2 docs](https://www.backblaze.com/b2/docs/buckets.html))
+    - `PATREON_CLIENT_ID` (from your [Patreon API Client](https://www.patreon.com/portal/registration/register-clients))
+    - `PATREON_CLIENT_SECRET` (from your [Patreon API Client](https://www.patreon.com/portal/registration/register-clients))
+    - `SECURE_SSL_REDIRECT` (set "False" on test server, "True" on production)
 
 ## how to run locally
 
