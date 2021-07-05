@@ -33,7 +33,7 @@ Invoked in `scinguistics_archive/settings.py`, these should be exported as envir
 - set all of the [config vars](#configuration-variables)
     - remember to start a database service (code uses [postgresql](https://www.digitalocean.com/community/tutorials/how-to-install-and-use-postgresql-on-ubuntu-20-04), change that in `scinguistics_archive/settings.py` if using something else)
 - in `catalog/models.py` **comment out** the Lesson recording variable:
-...`# recording = models.FileField(blank=True, null=True, upload_to='uploads', storage=BackblazeB2Storage, help_text='Recording link from the CDN (autofilled from CRAIG/GIARC link)')`
+    - `# recording = models.FileField(blank=True, null=True, upload_to='uploads', storage=BackblazeB2Storage, help_text='Recording link from the CDN (autofilled from CRAIG/GIARC link)')`
 - run `python3 manage.py createcachetable`
     - this will fail if the previously mentioned line is not **commented out**
 - run `python3 manage.py makemigrations`
