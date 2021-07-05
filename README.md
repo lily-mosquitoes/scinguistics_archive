@@ -45,6 +45,7 @@ Invoked in `scinguistics_archive/settings.py`, these should be exported as envir
 - run `python3 manage.py collectstatic`
 - run `python3 manage.py createsuperuser`
 - run `python3 manage.py runserver`
+
 Now your test server should be accessible from http://127.0.0.1:8000/.
 
 ## how to deploy with Heroku
@@ -74,6 +75,8 @@ Now your test server should be accessible from http://127.0.0.1:8000/.
 - run `git push heroku main`
 - run `heroku run python manage.py migrate`
 - run `heroku run python manage.py createsuperuser`
+
 Now the deployed WebApp should be available at Heroku's provided url, as a shortcut you can run `heroku open`.
+
 Remember to add and commit changes using git (`git add .`, `git commit -m "commit message"`), and re-deploy to Heroku with `git push heroku main`.
 It is recommended to schedule [backups for the database](https://devcenter.heroku.com/articles/heroku-postgres-backups).
