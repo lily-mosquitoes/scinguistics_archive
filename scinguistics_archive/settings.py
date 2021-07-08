@@ -166,6 +166,7 @@ BACKBLAZE_CONFIG = {
 
 # django-allauth
 SITE_ID = 1
+ACCOUNT_EMAIL_VERIFICATION = 'none'
 
 SOCIALACCOUNT_PROVIDERS = {
     'patreon': {
