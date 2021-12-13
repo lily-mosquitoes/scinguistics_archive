@@ -1,3 +1,6 @@
+# venv
+venv
+
 # interpreter files
 __pycache__
 *.pyc
