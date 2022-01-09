@@ -75,23 +75,27 @@
   </form>
 
   <script>
-      function getData() {
+      async function getData() {
           var url = document.getElementById('id_recording_processing_link').value;
-          var Httpreq = new XMLHttpRequest();
           // get duration
-          Httpreq.open("GET",url+"&duration",false);
-          Httpreq.send(null);
-          var dur_s = Math.trunc(JSON.parse(Httpreq.responseText).duration);
+          let duration = await fetch(url+"&duration")
+            .then(response => response.json())
+            .then(json => {
+                return json.duration;
+            });
+          var dur_s = Math.trunc(duration)
           var dur_m = Math.trunc(dur_s/60);
           var dur_h = Math.trunc(dur_m/60);
-          var dur = `${dur_h}:${dur_m-(dur_h*60)}:${dur_s-(dur_m*60)}`
+          const pad = (num) => String(num).padStart(2, '0');
+          var dur = `${pad(dur_h)}:${pad(dur_m-(dur_h*60))}:${pad(dur_s-(dur_m*60))}`
           // get users
-          Httpreq.open("GET",url+"&fetch=info",false);
-          Httpreq.send(null);
-          var tracks = JSON.parse(Httpreq.responseText).tracks;
+          let tracks = await fetch(url+"&fetch=info")
+            .then(response => response.json())
+            .then(json => {
+                return json.tracks;
+            });
           var users = "";
           for (var key in tracks) {
-              console.log(tracks[key].name);
               if (tracks[key].name != "Craig" && tracks[key].name != "Giarc") {
                 users += "\t" + tracks[key].name + "\n";
               }
