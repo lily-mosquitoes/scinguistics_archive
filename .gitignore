@@ -1,6 +1,9 @@
 # venv
 venv
 
+# env variables
+env_variables.sh
+
 # interpreter files
 __pycache__
 *.pyc
