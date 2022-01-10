@@ -6,17 +6,18 @@ from django.views.generic.edit import CreateView, UpdateView, DeleteView
 from django.urls import reverse_lazy
 from catalog.forms import TagForm, TypeForm, TeacherForm, StudentForm, LessonCreateForm
 from django.contrib.auth.mixins import PermissionRequiredMixin
-from urllib.request import urlretrieve
+from urllib.request import urlretrieve, urlopen, Request
 from django import db
 import os
 import shutil
 from zipfile import ZipFile
 from django.core.files import File
 import time
-from django.http import HttpResponseRedirect
+from django.http import HttpResponseRedirect, HttpResponse
 from django.core.files.uploadedfile import InMemoryUploadedFile
 from django.core.exceptions import ValidationError
 from django.db.models import ProtectedError
+import json
 
 def index(request):
     """Home Page view function"""
@@ -49,7 +50,7 @@ def thanks(request):
     # campaign_id = resp.json().get('data')[0]['id']
     #
     # # getting Patreon campaign members names
-    # headers = {'Authorization': 'Bearer ' + os.environ.get('PATREON_CREATOR_ACCESS_TOKEN')}
+    # headers = {'Authorizatiorequestn': 'Bearer ' + os.environ.get('PATREON_CREATOR_ACCESS_TOKEN')}
     # cursor = ''
     # names = list()
     # while cursor != 'END':
@@ -69,6 +70,18 @@ def thanks(request):
     # }
 
     return render(request, 'thanks.html')#, context=context)
+
+def cors_request(request):
+    url = request.META.get('QUERY_STRING').replace('url=', '')
+    print("url: ", url)
+    if url:
+        response_data = urlopen(url)
+        response_data = json.loads(response_data.read())
+        response_status = 200
+    else:
+        response_data = {'none': None}
+        response_status = 204
+    return HttpResponse(json.dumps(response_data), status=response_status, content_type="application/json")
 
 # class based views
 class LessonListView(LoginRequiredMixin, generic.ListView):

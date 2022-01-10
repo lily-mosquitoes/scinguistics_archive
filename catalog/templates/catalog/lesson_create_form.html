@@ -49,7 +49,7 @@
         <td>
             {{ form.recording_processing_link.errors }}
             {{ form.recording_processing_link }}
-            <button onclick="get_info()">get info</button>
+            <button type="button" onclick="get_info()">get info</button>
             <br>{{ form.recording_processing_link.help_text }}
             <br><label style="color:Green" id=duration>duration: </label>
             <br><label style="color:Green" id=users>users: </label>
@@ -88,10 +88,13 @@
                 const pad = (num) => String(num).padStart(2, '0');
                 var dur = `${pad(dur_h)}:${pad(dur_m-(dur_h*60))}:${pad(dur_s-(dur_m*60))}`
                 document.getElementById("duration").innerHTML = "duration: " + dur;
+            } else {
+                document.getElementById("duration").innerHTML = "duration: NULL";
             }
           };
-          xhttp.open("GET", "https://cors-anywhere.herokuapp.com/" + url + "&duration&r=" + Math.random(), true);
-          xhttp.send();duration
+          xhttp.open("GET", `${window.location.protocol}//${window.location.host}/catalog/corsrequest/?url=${url}&duration&r=${Math.random()}`, true);
+          // xhttp.open("GET", `http://127.0.0.1:8000/catalog/corsrequest/?url=${url}&duration&r=${Math.random()}`, true);
+          xhttp.send();
       }
       function users() {
           var url = document.getElementById("id_recording_processing_link").value;
@@ -106,9 +109,11 @@
                     }
                 }
                 document.getElementById("users").innerHTML = "users: " + users.slice(0 ,-2);
+            } else {
+                document.getElementById("users").innerHTML = "users: NULL";
             }
           };
-          xhttp.open("GET", "https://cors-anywhere.herokuapp.com/" + url + "&fetch=info", true);
+          xhttp.open("GET", `${window.location.protocol}//${window.location.host}/catalog/corsrequest/?url=${url}&fetch=info`, true);
           xhttp.send();
       }
       function get_info() {

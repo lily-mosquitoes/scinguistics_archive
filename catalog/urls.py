@@ -4,6 +4,7 @@ from . import views
 urlpatterns = [
     path('', views.index, name='index'),
     path('thanks/', views.thanks, name='thanks'),
+    path('corsrequest/', views.cors_request, name='cors-request'),
     path('lessons/', views.LessonListView.as_view(), name='lessons'),
     path('lessons/<int:pk>', views.LessonDetailView.as_view(), name='lesson-detail'),
     path('students/', views.StudentListView.as_view(), name='students'),
