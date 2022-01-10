@@ -49,8 +49,10 @@
         <td>
             {{ form.recording_processing_link.errors }}
             {{ form.recording_processing_link }}
-            <button onclick="getData()">get data</button>
+            <button onclick="get_info()">get info</button>
             <br>{{ form.recording_processing_link.help_text }}
+            <br><label style="color:Green" id=duration>duration: </label>
+            <br><label style="color:Green" id=users>users: </label>
         </td>
       </tr>
       <tr class="fieldWrapper">
@@ -75,33 +77,43 @@
   </form>
 
   <script>
-      async function getData() {
-          var url = document.getElementById('id_recording_processing_link').value;
-          // get duration
-          let duration = await fetch(url+"&duration")
-            .then(response => response.json())
-            .then(json => {
-                return json.duration;
-            });
-          var dur_s = Math.trunc(duration)
-          var dur_m = Math.trunc(dur_s/60);
-          var dur_h = Math.trunc(dur_m/60);
-          const pad = (num) => String(num).padStart(2, '0');
-          var dur = `${pad(dur_h)}:${pad(dur_m-(dur_h*60))}:${pad(dur_s-(dur_m*60))}`
-          // get users
-          let tracks = await fetch(url+"&fetch=info")
-            .then(response => response.json())
-            .then(json => {
-                return json.tracks;
-            });
-          var users = "";
-          for (var key in tracks) {
-              if (tracks[key].name != "Craig" && tracks[key].name != "Giarc") {
-                users += "\t" + tracks[key].name + "\n";
-              }
-          }
-          // alert
-          alert("duration: "+dur+"\n"+"users: \n"+users)
+      function duration() {
+          var url = document.getElementById("id_recording_processing_link").value;
+          var xhttp = new XMLHttpRequest();
+          xhttp.onreadystatechange = function() {
+            if (this.readyState == 4 && this.status == 200) {
+                var dur_s = Math.trunc(JSON.parse(this.responseText).duration);
+                var dur_m = Math.trunc(dur_s/60);
+                var dur_h = Math.trunc(dur_m/60);
+                const pad = (num) => String(num).padStart(2, '0');
+                var dur = `${pad(dur_h)}:${pad(dur_m-(dur_h*60))}:${pad(dur_s-(dur_m*60))}`
+                document.getElementById("duration").innerHTML = "duration: " + dur;
+            }
+          };
+          xhttp.open("GET", "https://cors-anywhere.herokuapp.com/" + url + "&duration&r=" + Math.random(), true);
+          xhttp.send();duration
+      }
+      function users() {
+          var url = document.getElementById("id_recording_processing_link").value;
+          var xhttp = new XMLHttpRequest();
+          xhttp.onreadystatechange = function() {
+            if (this.readyState == 4 && this.status == 200) {
+                var tracks = JSON.parse(this.responseText).tracks;
+                var users = "";
+                for (var key in tracks) {
+                    if (tracks[key].name != "Craig" && tracks[key].name != "Giarc") {
+                      users += tracks[key].name + ", ";
+                    }
+                }
+                document.getElementById("users").innerHTML = "users: " + users.slice(0 ,-2);
+            }
+          };
+          xhttp.open("GET", "https://cors-anywhere.herokuapp.com/" + url + "&fetch=info", true);
+          xhttp.send();
+      }
+      function get_info() {
+          duration();
+          users();
       }
   </script>
 {% endblock %}
