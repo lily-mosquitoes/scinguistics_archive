@@ -424,6 +424,7 @@ class LessonCreate(PermissionRequiredMixin, CreateView):
                     #r = urlretrieve(file_url, f"{file_name}.zip")
                     ## changed the retrieval to urllib3 because craig api changed
                     http = urllib3.PoolManager()
+                    print("||| URL ||| ", file_url)
                     r = http.request('GET', file_url, preload_content=False)
                     with open(f"{file_name}.zip", "wb") as out:
                         while True:
@@ -431,7 +432,7 @@ class LessonCreate(PermissionRequiredMixin, CreateView):
                             if not data:
                                 break
                             out.write(data)
-                    r.relase_conn()
+                    r.release_conn()
                     # unzip
                     print('download finished')
                     ZipFile(f"{file_name}.zip").extractall(file_name)

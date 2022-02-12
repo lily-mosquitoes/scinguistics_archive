@@ -3,7 +3,7 @@ from .models import Tag, Type, Teacher, Student, Lesson
 from django.core.exceptions import ValidationError
 from urllib.request import urlopen
 import urllib3
-from urllib.parse import urlparse
+from urllib.parse import urlparse, parse_qs
 import os
 import json
 from datetime import datetime
@@ -99,7 +99,17 @@ class LessonCreateForm(forms.ModelForm):
             raise ValidationError('ONLY CHOOSE ONE OPTION: INPUT CRAIG/GIARC LINK OR UPLOAD A FILE')
 
         if 'craig' in base_url:
-            html = urlopen(base_url).read()
+            parsed = urlparse(base_url)
+            query = parse_qs(parsed.query)
+            rec_n = query['id'][0]
+            rec_key = query['key'][0]
+            base_url = f"{parsed.scheme}://{parsed.netloc}/api/rec/{rec_n}?key={rec_key}"
+            print('base_url: ', base_url)
+
+            http = urllib3.PoolManager()
+            r = http.request('GET', base_url)
+
+            html = r.data.decode('utf-8')
         else:
             raise ValidationError('Invalid CRAIG/GIARC URL')
 
@@ -107,23 +117,22 @@ class LessonCreateForm(forms.ModelForm):
             # get info
             # info_url = f"{base_url}&fetch=info"
             ## changed because of craig api change
-            parsed = urlparse(base_url)
-            rec_n = parsed.path.split('/')[-1]
-            info_url = f"{parsed.scheme}://{parsed.netloc}/api/recording/{rec_n}/.txt?{parsed.query}"
+            info_url = f"{parsed.scheme}://{parsed.netloc}/api/recording/{rec_n}/.txt?key={rec_key}"
+            print('info_url: ', info_url)
 
             http = urllib3.PoolManager()
             r = http.request('GET', info_url, preload_content=False)
-            with open(f"{rec_n}.txt") as out:
+            with open(f"{rec_n}.txt", "wb") as out:
                 while True:
                     data = r.read()
                     if not data:
                         break
                     out.write(data)
-            r.relase_conn()
+            r.release_conn()
 
             # info = json.loads(urlopen(info_url).read())
             info = []
-            with open(f"{rec_n}.txt", "wb") as f:
+            with open(f"{rec_n}.txt", "rt") as f:
                 for line in f.read().split("\n"):
                     if "Start time" in line:
                         info.extend(line.split("\t"))
@@ -134,7 +143,8 @@ class LessonCreateForm(forms.ModelForm):
             lesson_date_and_time = datetime.fromisoformat(info.replace('Z', '+00:00'))
             # get file
             # file_url = f"{base_url}&fetch=cooked&format=powersfxu"
-            file_url = f"{parsed.scheme}://{parsed.netloc}/api/recording/{rec_n}/cooked/run?{parsed.query}&format=powersfxu&container=zip&dynaudnorm=false"
+            file_url = f"{parsed.scheme}://{parsed.netloc}/api/recording/{rec_n}/cook/run?key={rec_key}&format=powersfxu&container=zip&dynaudnorm=false"
+            print('file_url: ', file_url)
             file_name = f"lesson-recording-{lesson_date_and_time.isoformat()}"
         else:
             raise ValidationError('Expired CRAIG/GIARC URL')
