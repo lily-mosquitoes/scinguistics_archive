@@ -2,6 +2,9 @@ from django import forms
 from .models import Tag, Type, Teacher, Student, Lesson
 from django.core.exceptions import ValidationError
 from urllib.request import urlopen
+import urllib3
+from urllib.parse import urlparse
+import os
 import json
 from datetime import datetime
 
@@ -102,11 +105,36 @@ class LessonCreateForm(forms.ModelForm):
 
         if 'Invalid ID' not in str(html):
             # get info
-            info_url = f"{base_url}&fetch=info"
-            info = json.loads(urlopen(info_url).read())
-            lesson_date_and_time = datetime.fromisoformat(info['startTime'].replace('Z', '+00:00'))
+            # info_url = f"{base_url}&fetch=info"
+            ## changed because of craig api change
+            parsed = urlparse(base_url)
+            rec_n = parsed.path.split('/')[-1]
+            info_url = f"{parsed.scheme}://{parsed.netloc}/api/recording/{rec_n}/.txt?{parsed.query}"
+
+            http = urllib3.PoolManager()
+            r = http.request('GET', info_url, preload_content=False)
+            with open(f"{rec_n}.txt") as out:
+                while True:
+                    data = r.read()
+                    if not data:
+                        break
+                    out.write(data)
+            r.relase_conn()
+
+            # info = json.loads(urlopen(info_url).read())
+            info = []
+            with open(f"{rec_n}.txt", "wb") as f:
+                for line in f.read().split("\n"):
+                    if "Start time" in line:
+                        info.extend(line.split("\t"))
+                        break
+            info = info[-1]
+            os.system(f"rm {rec_n}.txt")
+            # lesson_date_and_time = datetime.fromisoformat(info['startTime'].replace('Z', '+00:00'))
+            lesson_date_and_time = datetime.fromisoformat(info.replace('Z', '+00:00'))
             # get file
-            file_url = f"{base_url}&fetch=cooked&format=powersfxu"
+            # file_url = f"{base_url}&fetch=cooked&format=powersfxu"
+            file_url = f"{parsed.scheme}://{parsed.netloc}/api/recording/{rec_n}/cooked/run?{parsed.query}&format=powersfxu&container=zip&dynaudnorm=false"
             file_name = f"lesson-recording-{lesson_date_and_time.isoformat()}"
         else:
             raise ValidationError('Expired CRAIG/GIARC URL')

@@ -7,6 +7,8 @@ from django.urls import reverse_lazy
 from catalog.forms import TagForm, TypeForm, TeacherForm, StudentForm, LessonCreateForm
 from django.contrib.auth.mixins import PermissionRequiredMixin
 from urllib.request import urlretrieve, urlopen, Request
+import urllib3
+from urllib.parse import urlparse
 from django import db
 import os
 import shutil
@@ -71,16 +73,54 @@ def thanks(request):
 
     return render(request, 'thanks.html')#, context=context)
 
-def cors_request(request):
+def info_request(request):
     url = request.META.get('QUERY_STRING').replace('url=', '')
     print("url: ", url)
     if url:
-        response_data = urlopen(url)
-        response_data = json.loads(response_data.read())
+        parsed = urlparse(url)
+        rec_n = parsed.path.split('/')[3]
+
+        http = urllib3.PoolManager()
+        r = http.request('GET', url, preload_content=False)
+        with open(f"{rec_n}.txt", "wb") as out:
+            while True:
+                data = r.read()
+                if not data:
+                    break
+                out.write(data)
+        r.release_conn()
+
+        users = []
+        with open(f"{rec_n}.txt", 'rt') as f:
+            for line in f.read().split("\n"):
+                print(line)
+                if ("#" in line) and ("Channel" not in line) and ("Requester" not in line):
+                    users.append(line.rsplit(" ", maxsplit=1)[0].strip())
+
+        os.system(f"rm {rec_n}.txt")
+
+        response_data = {'users': users}
         response_status = 200
     else:
         response_data = {'none': None}
         response_status = 204
+    print("info: ", response_data)
+    return HttpResponse(json.dumps(response_data), status=response_status, content_type="application/json")
+
+def cors_request(request):
+    url = request.META.get('QUERY_STRING').replace('url=', '')
+    print("url: ", url)
+    if url:
+        # response_data = urlopen(url)
+        # response_data = json.loads(response_data.read())
+        http = urllib3.PoolManager()
+        response_data = http.request('GET', url)
+        response_data = json.loads(response_data.data.decode('utf8'))
+        response_status = 200
+    else:
+        response_data = {'none': None}
+        response_status = 204
+    print("data: ", response_data)
     return HttpResponse(json.dumps(response_data), status=response_status, content_type="application/json")
 
 # class based views
@@ -381,7 +421,17 @@ class LessonCreate(PermissionRequiredMixin, CreateView):
                     print('PID: ', os.getpid())
                     # download zip file from CRAIG/GIARC url
                     print('download started')
-                    r = urlretrieve(file_url, f"{file_name}.zip")
+                    #r = urlretrieve(file_url, f"{file_name}.zip")
+                    ## changed the retrieval to urllib3 because craig api changed
+                    http = urllib3.PoolManager()
+                    r = http.request('GET', file_url, preload_content=False)
+                    with open(f"{file_name}.zip", "wb") as out:
+                        while True:
+                            data = r.read()
+                            if not data:
+                                break
+                            out.write(data)
+                    r.relase_conn()
                     # unzip
                     print('download finished')
                     ZipFile(f"{file_name}.zip").extractall(file_name)
