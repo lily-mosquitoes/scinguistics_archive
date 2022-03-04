@@ -143,8 +143,9 @@ class LessonCreateForm(forms.ModelForm):
             lesson_date_and_time = datetime.fromisoformat(info.replace('Z', '+00:00'))
             # get file
             # file_url = f"{base_url}&fetch=cooked&format=powersfxu"
-            file_url = f"{parsed.scheme}://{parsed.netloc}/api/recording/{rec_n}/cook/run?key={rec_key}&format=powersfxu&container=zip&dynaudnorm=false"
-            print('file_url: ', file_url)
+            # file_url = f"{parsed.scheme}://{parsed.netloc}/api/recording/{rec_n}/cook/run?key={rec_key}&format=powersfxu&container=zip&dynaudnorm=false" # API CHANGED AGAIN
+            file_url = f"{parsed.scheme}://{parsed.netloc}/api/recording/{rec_n}/cook?key={rec_key}"
+            # print('file_url: ', file_url)
             file_name = f"lesson-recording-{lesson_date_and_time.isoformat()}"
         else:
             raise ValidationError('Expired CRAIG/GIARC URL')

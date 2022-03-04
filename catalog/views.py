@@ -425,7 +425,31 @@ class LessonCreate(PermissionRequiredMixin, CreateView):
                     ## changed the retrieval to urllib3 because craig api changed
                     http = urllib3.PoolManager()
                     print("||| URL ||| ", file_url)
-                    r = http.request('GET', file_url, preload_content=False)
+                    # r = http.request('GET', file_url, preload_content=False)
+                    ready_file = ''
+                    posted = False
+                    i = 0
+                    while ready_file == '':
+                        if i >= 2000:
+                            raise Exception('max iterations reached, Craig server non-responsive?')
+                        i += 1
+                        r = http.request('GET', file_url, preload_content=False)
+                        if r.status == 200:
+                            info = json.loads(r.data)
+                            if info['download'] != None:
+                                ready_file = info['download']['file']
+                            elif posted == False:
+                                body = json.dumps({'container': 'zip', 'dynaudnorm': 'false', 'format': 'powersfxu'}).encode('utf-8')
+                                p = http.request('POST', file_url, body=body, headers={'Content-Type': 'application/json'})
+                                if p.status == 200:
+                                    posted = True
+                                else:
+                                    raise Exception('Craig server not reachable')
+                        else:
+                            raise Exception('Craig server not reachable')
+
+                    download_url = f"https://craig.horse/dl/{ready_file}"
+                    r = http.request('GET', download_url, preload_content=False)
                     with open(f"{file_name}.zip", "wb") as out:
                         while True:
                             data = r.read()
