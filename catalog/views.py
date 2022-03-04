@@ -430,7 +430,8 @@ class LessonCreate(PermissionRequiredMixin, CreateView):
                     posted = False
                     i = 0
                     while ready_file == '':
-                        if i >= 2000:
+                        if i >= 6000:
+                            print(">>>>> max iterations reached, Craig server non-responsive? <<<<<")
                             raise Exception('max iterations reached, Craig server non-responsive?')
                         i += 1
                         r = http.request('GET', file_url, preload_content=False)
@@ -474,6 +475,10 @@ class LessonCreate(PermissionRequiredMixin, CreateView):
                         lesson.recording.save(f"{lesson.get_recording_stamp()}.m4a", File(recording))
                 except Exception as e:
                     print('PROBLEM SOMEWHERE')
+                    # cleanup
+                    print('cleanup started')
+                    # remove downloaded files
+                    os.system(f"rm -r {file_name}")
                     raise e
                 # cleanup
                 print('cleanup started')
