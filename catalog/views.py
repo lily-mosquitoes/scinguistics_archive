@@ -430,10 +430,6 @@ class LessonCreate(PermissionRequiredMixin, CreateView):
                     posted = False
                     i = 0
                     while ready_file == '':
-                        if i >= 6000:
-                            print(">>>>> max iterations reached, Craig server non-responsive? <<<<<")
-                            raise Exception('max iterations reached, Craig server non-responsive?')
-                        i += 1
                         r = http.request('GET', file_url, preload_content=False)
                         if r.status == 200:
                             info = json.loads(r.data)
@@ -448,6 +444,12 @@ class LessonCreate(PermissionRequiredMixin, CreateView):
                                     raise Exception('Craig server not reachable')
                         else:
                             raise Exception('Craig server not reachable')
+
+                        if i >= 1800:
+                            print(">>>>> max iterations reached, Craig server non-responsive? <<<<<")
+                            raise Exception('max iterations reached, Craig server non-responsive?')
+                        i += 1
+                        time.sleep(10)
 
                     download_url = f"https://craig.horse/dl/{ready_file}"
                     r = http.request('GET', download_url, preload_content=False)
