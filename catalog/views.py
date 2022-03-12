@@ -421,6 +421,10 @@ class LessonCreate(PermissionRequiredMixin, CreateView):
                     print('PID: ', os.getpid())
                     # download zip file from CRAIG/GIARC url
                     print('download requested')
+                    open(f"{file_name}.lock", 'wt').write('download lock')
+                    for f in os.listdir('.'):
+                        if '.lock' in f:
+                            print(f)
                     #r = urlretrieve(file_url, f"{file_name}.zip")
                     ## changed the retrieval to urllib3 because craig api changed
                     http = urllib3.PoolManager()
@@ -445,10 +449,12 @@ class LessonCreate(PermissionRequiredMixin, CreateView):
                                 ready_file = info['download']['file']
                                 ready = True
                         else:
+                            os.remove(f"{file_name}.lock")
                             raise Exception('Craig server not reachable')
 
                         if i >= 1800:
                             print(">>>>> max iterations reached, Craig server non-responsive? <<<<<")
+                            os.remove(f"{file_name}.lock")
                             raise Exception('max iterations reached, Craig server non-responsive?')
                         i += 1
                         time.sleep(10)
@@ -469,10 +475,11 @@ class LessonCreate(PermissionRequiredMixin, CreateView):
                     time.sleep(10)
                     print('zip files on root:')
                     for f in os.listdir('.'):
-                        if '.zip' in f or '.part' in f:
+                        if '.zip' in f or '.lock' in f:
                             print(f)
                     ZipFile(f"{file_name}.zip").extractall(file_name)
                     os.remove(f"{file_name}.zip")
+                    os.remove(f"{file_name}.lock")
                     # process files to single track
                     print('processing started')
                     shutil.copyfile('process_recording.sh', f"{file_name}/process_recording.sh")
