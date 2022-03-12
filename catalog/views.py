@@ -437,6 +437,7 @@ class LessonCreate(PermissionRequiredMixin, CreateView):
                     if p.status == 200:
                         posted = True
                     else:
+                        os.remove(f"{file_name}.lock")
                         raise Exception('Craig server not reachable')
                     ready = False
                     i = 0
@@ -450,7 +451,7 @@ class LessonCreate(PermissionRequiredMixin, CreateView):
                                 ready = True
                         else:
                             os.remove(f"{file_name}.lock")
-                            raise Exception('Craig server not reachable')
+                            raise Exception('Craig/Giarc server not reachable')
 
                         if i >= 1800:
                             print(">>>>> max iterations reached, Craig server non-responsive? <<<<<")
@@ -459,16 +460,22 @@ class LessonCreate(PermissionRequiredMixin, CreateView):
                         i += 1
                         time.sleep(10)
 
-                    download_url = f"https://craig.horse/dl/{ready_file}"
+                    parsed = urlparse(file_url)
+
+                    download_url = f"{parsed.scheme}://{parsed.netloc}/dl/{ready_file}"
+                    time.sleep(10)
 
                     print('download started')
                     r = http.request('GET', download_url, preload_content=False)
-                    with open(f"{file_name}.zip", "wb") as out:
-                        while True:
-                            data = r.read()
-                            if not data:
-                                break
-                            out.write(data)
+                    if r.status == 200:
+                        with open(f"{file_name}.zip", "wb") as out:
+                            while True:
+                                data = r.read()
+                                if not data:
+                                    break
+                                out.write(data)
+                    else:
+                        raise Exception("Craig/Giarc link broken")
                     r.release_conn()
                     # unzip
                     print('download finished')
@@ -477,7 +484,13 @@ class LessonCreate(PermissionRequiredMixin, CreateView):
                     for f in os.listdir('.'):
                         if '.zip' in f or '.lock' in f:
                             print(f)
-                    ZipFile(f"{file_name}.zip").extractall(file_name)
+                    try:
+                        ZipFile(f"{file_name}.zip").extractall(file_name)
+                    except Exception as e:
+                        print("zipfile extraction failes")
+                        os.remove(f"{file_name}.zip")
+                        os.remove(f"{file_name}.lock")
+                        raise e
                     os.remove(f"{file_name}.zip")
                     os.remove(f"{file_name}.lock")
                     # process files to single track
