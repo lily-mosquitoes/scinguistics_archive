@@ -420,28 +420,30 @@ class LessonCreate(PermissionRequiredMixin, CreateView):
                     print('################### DEBUG ##################')
                     print('PID: ', os.getpid())
                     # download zip file from CRAIG/GIARC url
-                    print('download started')
+                    print('download requested')
                     #r = urlretrieve(file_url, f"{file_name}.zip")
                     ## changed the retrieval to urllib3 because craig api changed
                     http = urllib3.PoolManager()
                     print("||| URL ||| ", file_url)
-                    # r = http.request('GET', file_url, preload_content=False)
-                    ready_file = ''
-                    posted = False
+
+                    body = json.dumps({'container': 'zip', 'dynaudnorm': 'false', 'format': 'powersfxu'}).encode('utf-8')
+
+                    p = http.request('POST', file_url, body=body, headers={'Content-Type': 'application/json'})
+
+                    if p.status == 200:
+                        posted = True
+                    else:
+                        raise Exception('Craig server not reachable')
+                    ready = False
                     i = 0
-                    while ready_file == '':
+                    while ready == False:
                         r = http.request('GET', file_url, preload_content=False)
                         if r.status == 200:
                             info = json.loads(r.data)
-                            if info['download'] != None:
+                            print('get_req: ', info)
+                            if info['ready'] == True:
                                 ready_file = info['download']['file']
-                            elif posted == False:
-                                body = json.dumps({'container': 'zip', 'dynaudnorm': 'false', 'format': 'powersfxu'}).encode('utf-8')
-                                p = http.request('POST', file_url, body=body, headers={'Content-Type': 'application/json'})
-                                if p.status == 200:
-                                    posted = True
-                                else:
-                                    raise Exception('Craig server not reachable')
+                                ready = True
                         else:
                             raise Exception('Craig server not reachable')
 
@@ -452,6 +454,8 @@ class LessonCreate(PermissionRequiredMixin, CreateView):
                         time.sleep(10)
 
                     download_url = f"https://craig.horse/dl/{ready_file}"
+
+                    print('download started')
                     r = http.request('GET', download_url, preload_content=False)
                     with open(f"{file_name}.zip", "wb") as out:
                         while True:
