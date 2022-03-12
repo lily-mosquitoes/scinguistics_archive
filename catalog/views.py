@@ -462,6 +462,11 @@ class LessonCreate(PermissionRequiredMixin, CreateView):
                     r.release_conn()
                     # unzip
                     print('download finished')
+                    time.sleep(10)
+                    print('zip files on root:')
+                    for f in os.listdir('.'):
+                        if '.zip' in f or '.part' in f:
+                            print(f)
                     ZipFile(f"{file_name}.zip").extractall(file_name)
                     os.remove(f"{file_name}.zip")
                     # process files to single track
