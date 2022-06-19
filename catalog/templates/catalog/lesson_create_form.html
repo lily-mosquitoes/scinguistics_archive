@@ -81,7 +81,7 @@
           var url = document.getElementById("id_recording_processing_link").value;
           // changed because of change in craig api
           const parsed = new URL(url);
-          const newurl = `${parsed.protocol}//${parsed.host}/api/recording/${parsed.searchParams.get('id')}/duration?key=${parsed.searchParams.get('key')}`
+          const newurl = `${parsed.protocol}//${parsed.host}/api/recording/${parsed.pathname.split("/")[2]}/duration?key=${parsed.searchParams.get('key')}`
 
           var xhttp = new XMLHttpRequest();
           xhttp.onreadystatechange = function() {
@@ -106,7 +106,7 @@
           var url = document.getElementById("id_recording_processing_link").value;
           // changed because of change in craig api
           const parsed = new URL(url);
-          const newurl = `${parsed.protocol}//${parsed.host}/api/recording/${parsed.searchParams.get('id')}/.txt?key=${parsed.searchParams.get('key')}`
+          const newurl = `${parsed.protocol}//${parsed.host}/api/recording/${parsed.pathname.split("/")[2]}/users?key=${parsed.searchParams.get('key')}`
 
           var xhttp = new XMLHttpRequest();
           xhttp.onreadystatechange = function() {
@@ -120,14 +120,18 @@
                 // }
                 // document.getElementById("users").innerHTML = "users: " + users.slice(0 ,-2);
                 var users = JSON.parse(this.responseText).users;
-                document.getElementById("users").innerHTML = "users: " + users.join(", ");
+                var users_list = [];
+                for (let i = 0; i < users.length; i++) {
+                    users_list.push(users[i].username);
+                }
+                document.getElementById("users").innerHTML = "users: " + users_list.join(", ");
             } else if (this.readyState == 4 && this.status != 200) {
                 document.getElementById("users").innerHTML = "users: NOT FOUND";
             } else {
                 document.getElementById("users").innerHTML = "users: loading...";
             }
           };
-          xhttp.open("GET", `${window.location.protocol}//${window.location.host}/catalog/inforequest/?url=${newurl}`, true);
+          xhttp.open("GET", `${window.location.protocol}//${window.location.host}/catalog/corsrequest/?url=${newurl}`, true);
           xhttp.send();
       }
       function get_info() {

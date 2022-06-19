@@ -101,7 +101,7 @@ class LessonCreateForm(forms.ModelForm):
         if 'craig' in base_url:
             parsed = urlparse(base_url)
             query = parse_qs(parsed.query)
-            rec_n = query['id'][0]
+            rec_n = parsed.path.split("/")[-1]
             rec_key = query['key'][0]
             base_url = f"{parsed.scheme}://{parsed.netloc}/api/rec/{rec_n}?key={rec_key}"
             print('base_url: ', base_url)
