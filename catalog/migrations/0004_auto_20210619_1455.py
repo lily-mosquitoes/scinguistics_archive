@@ -4,26 +4,25 @@ from django.db import migrations
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('catalog', '0003_auto_20210619_1441'),
+        ("catalog", "0003_auto_20210619_1441"),
     ]
 
     operations = [
         migrations.AlterModelOptions(
-            name='lesson',
+            name="lesson",
             options={},
         ),
         migrations.AlterModelOptions(
-            name='tags',
-            options={'verbose_name_plural': 'Tags'},
+            name="tags",
+            options={"verbose_name_plural": "Tags"},
         ),
         migrations.AlterModelOptions(
-            name='teacher',
+            name="teacher",
             options={},
         ),
         migrations.AlterModelOptions(
-            name='type',
+            name="type",
             options={},
         ),
     ]

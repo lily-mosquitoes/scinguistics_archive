@@ -21,6 +21,7 @@ from django.core.exceptions import ValidationError
 from django.db.models import ProtectedError
 import json
 
+
 def index(request):
     """Home Page view function"""
 
@@ -29,17 +30,21 @@ def index(request):
     num_lessons = Lesson.objects.all().count()
 
     types = list(Type.objects.all())
-    list_num_lessons_per_type = [(type_name, Lesson.objects.filter(type=type_name).count()) for type_name in types]
+    list_num_lessons_per_type = [
+        (type_name, Lesson.objects.filter(type=type_name).count())
+        for type_name in types
+    ]
 
     # context
     context = {
-        'num_students': num_students,
-        'num_lessons': num_lessons,
-        'list_num_lessons_per_type': list_num_lessons_per_type,
+        "num_students": num_students,
+        "num_lessons": num_lessons,
+        "list_num_lessons_per_type": list_num_lessons_per_type,
     }
 
     # render the HTML template index.html with the data in the context variable
-    return render(request, 'index.html', context=context)
+    return render(request, "index.html", context=context)
+
 
 def thanks(request):
     """Thank You Page view function"""
@@ -71,17 +76,18 @@ def thanks(request):
     #     'patreon_supporters': sorted(names),
     # }
 
-    return render(request, 'thanks.html')#, context=context)
+    return render(request, "thanks.html")  # , context=context)
+
 
 def info_request(request):
-    url = request.META.get('QUERY_STRING').replace('url=', '')
+    url = request.META.get("QUERY_STRING").replace("url=", "")
     print("url: ", url)
     if url:
         parsed = urlparse(url)
-        rec_n = parsed.path.split('/')[3]
+        rec_n = parsed.path.split("/")[3]
 
         http = urllib3.PoolManager()
-        r = http.request('GET', url, preload_content=False)
+        r = http.request("GET", url, preload_content=False)
         with open(f"{rec_n}.txt", "wb") as out:
             while True:
                 data = r.read()
@@ -91,37 +97,51 @@ def info_request(request):
         r.release_conn()
 
         users = []
-        with open(f"{rec_n}.txt", 'rt') as f:
+        with open(f"{rec_n}.txt", "rt") as f:
             for line in f.read().split("\n"):
                 print(line)
-                if ("#" in line) and ("Channel" not in line) and ("Requester" not in line):
+                if (
+                    ("#" in line)
+                    and ("Channel" not in line)
+                    and ("Requester" not in line)
+                ):
                     users.append(line.rsplit(" ", maxsplit=1)[0].strip())
 
         os.system(f"rm {rec_n}.txt")
 
-        response_data = {'users': users}
+        response_data = {"users": users}
         response_status = 200
     else:
-        response_data = {'none': None}
+        response_data = {"none": None}
         response_status = 204
     print("info: ", response_data)
-    return HttpResponse(json.dumps(response_data), status=response_status, content_type="application/json")
+    return HttpResponse(
+        json.dumps(response_data),
+        status=response_status,
+        content_type="application/json",
+    )
+
 
 def cors_request(request):
-    url = request.META.get('QUERY_STRING').replace('url=', '')
+    url = request.META.get("QUERY_STRING").replace("url=", "")
     print("url: ", url)
     if url:
         # response_data = urlopen(url)
         # response_data = json.loads(response_data.read())
         http = urllib3.PoolManager()
-        response_data = http.request('GET', url)
-        response_data = json.loads(response_data.data.decode('utf8'))
+        response_data = http.request("GET", url)
+        response_data = json.loads(response_data.data.decode("utf8"))
         response_status = 200
     else:
-        response_data = {'none': None}
+        response_data = {"none": None}
         response_status = 204
     print("data: ", response_data)
-    return HttpResponse(json.dumps(response_data), status=response_status, content_type="application/json")
+    return HttpResponse(
+        json.dumps(response_data),
+        status=response_status,
+        content_type="application/json",
+    )
+
 
 # class based views
 class LessonListView(LoginRequiredMixin, generic.ListView):
@@ -134,12 +154,17 @@ class LessonListView(LoginRequiredMixin, generic.ListView):
         # Call the base implementation first to get the context
         context = super(LessonListView, self).get_context_data(**kwargs)
         # Add data to the context
-        ALL_PROCESSES = [name.replace('.zip', '') for name in os.listdir('.') if 'lesson-recording-' in name]
+        ALL_PROCESSES = [
+            name.replace(".zip", "")
+            for name in os.listdir(".")
+            if "lesson-recording-" in name
+        ]
 
-        context['ALL_PROCESSES'] = ALL_PROCESSES
-        context['EMPTY_LIST'] = list()
+        context["ALL_PROCESSES"] = ALL_PROCESSES
+        context["EMPTY_LIST"] = list()
 
         return context
+
 
 class LessonDetailView(LoginRequiredMixin, generic.DetailView):
     """Lesson Detail view function"""
@@ -153,20 +178,22 @@ class LessonDetailView(LoginRequiredMixin, generic.DetailView):
         # set variable
         PROCESSING = False
         # check if files are still present
-        file_name = context['lesson'].recording_processing_filestorage_name
-        for name in os.listdir('.'):
+        file_name = context["lesson"].recording_processing_filestorage_name
+        for name in os.listdir("."):
             if file_name in name:
                 PROCESSING = True
         # add variable to context
-        context['PROCESSING'] = PROCESSING
+        context["PROCESSING"] = PROCESSING
 
         return context
+
 
 class StudentListView(LoginRequiredMixin, generic.ListView):
     """Student List view function"""
 
     model = Student
     paginate_by = 10
+
 
 class StudentDetailView(LoginRequiredMixin, generic.DetailView):
     """Student Detail view function"""
@@ -177,8 +204,9 @@ class StudentDetailView(LoginRequiredMixin, generic.DetailView):
         # Call the base implementation first to get the context
         context = super(StudentDetailView, self).get_context_data(**kwargs)
         # Add data to the context
-        context['lesson_list'] = Lesson.objects.filter(student=context['student'])
+        context["lesson_list"] = Lesson.objects.filter(student=context["student"])
         return context
+
 
 class TeacherListView(LoginRequiredMixin, generic.ListView):
     """Teacher List view function"""
@@ -186,11 +214,13 @@ class TeacherListView(LoginRequiredMixin, generic.ListView):
     model = Teacher
     paginate_by = 10
 
+
 class TypeListView(LoginRequiredMixin, generic.ListView):
     """Type List view function"""
 
     model = Type
     paginate_by = 10
+
 
 class TagListView(LoginRequiredMixin, generic.ListView):
     """Tag List view function"""
@@ -198,38 +228,41 @@ class TagListView(LoginRequiredMixin, generic.ListView):
     model = Tag
     paginate_by = 10
 
+
 # generic editing views
 # tag
 class TagCreate(PermissionRequiredMixin, CreateView):
-    permission_required = 'catalog.add_tag'
+    permission_required = "catalog.add_tag"
     model = Tag
     form_class = TagForm
 
     def form_valid(self, form):
         tag = form.save(commit=False)
-        tag.name = form.cleaned_data.get('name')
+        tag.name = form.cleaned_data.get("name")
         tag.save()
 
-        next = self.request.POST.get('next') or reverse_lazy('tags')
+        next = self.request.POST.get("next") or reverse_lazy("tags")
         return HttpResponseRedirect(next)
+
 
 class TagUpdate(PermissionRequiredMixin, UpdateView):
-    permission_required = 'catalog.change_tag'
+    permission_required = "catalog.change_tag"
     model = Tag
     form_class = TagForm
 
     def form_valid(self, form):
         tag = form.save(commit=False)
-        tag.name = form.cleaned_data.get('name')
+        tag.name = form.cleaned_data.get("name")
         tag.save()
 
-        next = self.request.POST.get('next') or reverse_lazy('tags')
+        next = self.request.POST.get("next") or reverse_lazy("tags")
         return HttpResponseRedirect(next)
 
+
 class TagDelete(PermissionRequiredMixin, DeleteView):
-    permission_required = 'catalog.delete_tag'
+    permission_required = "catalog.delete_tag"
     model = Tag
-    success_url = reverse_lazy('tags')
+    success_url = reverse_lazy("tags")
 
     def delete(self, request, *args, **kwargs):
         self.object = self.get_object()
@@ -242,44 +275,50 @@ class TagDelete(PermissionRequiredMixin, DeleteView):
 
         print(in_use)
         if self.object.name in in_use:
-            context = self.get_context_data(object=self.object, error='Cannot delete in use object instance, delete all uses first')
+            context = self.get_context_data(
+                object=self.object,
+                error="Cannot delete in use object instance, delete all uses first",
+            )
             return self.render_to_response(context)
         else:
             self.object.delete()
 
         return HttpResponseRedirect(success_url)
 
+
 # type
 class TypeCreate(PermissionRequiredMixin, CreateView):
-    permission_required = 'catalog.add_type'
+    permission_required = "catalog.add_type"
     model = Type
     form_class = TypeForm
 
     def form_valid(self, form):
         type = form.save(commit=False)
-        type.name = form.cleaned_data.get('name')
+        type.name = form.cleaned_data.get("name")
         type.save()
 
-        next = self.request.POST.get('next') or reverse_lazy('types')
+        next = self.request.POST.get("next") or reverse_lazy("types")
         return HttpResponseRedirect(next)
+
 
 class TypeUpdate(PermissionRequiredMixin, UpdateView):
-    permission_required = 'catalog.change_type'
+    permission_required = "catalog.change_type"
     model = Type
     form_class = TypeForm
 
     def form_valid(self, form):
         type = form.save(commit=False)
-        type.name = form.cleaned_data.get('name')
+        type.name = form.cleaned_data.get("name")
         type.save()
 
-        next = self.request.POST.get('next') or reverse_lazy('types')
+        next = self.request.POST.get("next") or reverse_lazy("types")
         return HttpResponseRedirect(next)
 
+
 class TypeDelete(PermissionRequiredMixin, DeleteView):
-    permission_required = 'catalog.delete_type'
+    permission_required = "catalog.delete_type"
     model = Type
-    success_url = reverse_lazy('types')
+    success_url = reverse_lazy("types")
 
     def delete(self, request, *args, **kwargs):
         self.object = self.get_object()
@@ -292,44 +331,50 @@ class TypeDelete(PermissionRequiredMixin, DeleteView):
 
         print(in_use)
         if self.object.name in in_use:
-            context = self.get_context_data(object=self.object, error='Cannot delete in use object instance, delete all uses first')
+            context = self.get_context_data(
+                object=self.object,
+                error="Cannot delete in use object instance, delete all uses first",
+            )
             return self.render_to_response(context)
         else:
             self.object.delete()
 
         return HttpResponseRedirect(success_url)
 
+
 # teacher
 class TeacherCreate(PermissionRequiredMixin, CreateView):
-    permission_required = 'catalog.add_teacher'
+    permission_required = "catalog.add_teacher"
     model = Teacher
     form_class = TeacherForm
 
     def form_valid(self, form):
         teacher = form.save(commit=False)
-        teacher.name = form.cleaned_data.get('name')
+        teacher.name = form.cleaned_data.get("name")
         teacher.save()
 
-        next = self.request.POST.get('next') or reverse_lazy('teachers')
+        next = self.request.POST.get("next") or reverse_lazy("teachers")
         return HttpResponseRedirect(next)
+
 
 class TeacherUpdate(PermissionRequiredMixin, UpdateView):
-    permission_required = 'catalog.change_teacher'
+    permission_required = "catalog.change_teacher"
     model = Teacher
     form_class = TeacherForm
 
     def form_valid(self, form):
         teacher = form.save(commit=False)
-        teacher.name = form.cleaned_data.get('name')
+        teacher.name = form.cleaned_data.get("name")
         teacher.save()
 
-        next = self.request.POST.get('next') or reverse_lazy('teachers')
+        next = self.request.POST.get("next") or reverse_lazy("teachers")
         return HttpResponseRedirect(next)
 
+
 class TeacherDelete(PermissionRequiredMixin, DeleteView):
-    permission_required = 'catalog.delete_teacher'
+    permission_required = "catalog.delete_teacher"
     model = Teacher
-    success_url = reverse_lazy('teachers')
+    success_url = reverse_lazy("teachers")
 
     def delete(self, request, *args, **kwargs):
         self.object = self.get_object()
@@ -338,42 +383,48 @@ class TeacherDelete(PermissionRequiredMixin, DeleteView):
             self.object.delete()
 
         except ProtectedError:
-            context = self.get_context_data(object=self.object, error='Cannot delete in use object instance, delete all uses first')
+            context = self.get_context_data(
+                object=self.object,
+                error="Cannot delete in use object instance, delete all uses first",
+            )
             return self.render_to_response(context)
 
         return HttpResponseRedirect(success_url)
+
 
 # student
 class StudentCreate(PermissionRequiredMixin, CreateView):
-    permission_required = 'catalog.add_student'
+    permission_required = "catalog.add_student"
     model = Student
     form_class = StudentForm
 
     def form_valid(self, form):
         student = form.save(commit=False)
-        student.name = form.cleaned_data.get('name')
+        student.name = form.cleaned_data.get("name")
         student.save()
 
-        next = self.request.POST.get('next') or reverse_lazy('students')
+        next = self.request.POST.get("next") or reverse_lazy("students")
         return HttpResponseRedirect(next)
+
 
 class StudentUpdate(PermissionRequiredMixin, UpdateView):
-    permission_required = 'catalog.change_student'
+    permission_required = "catalog.change_student"
     model = Student
     form_class = StudentForm
 
     def form_valid(self, form):
         student = form.save(commit=False)
-        student.name = form.cleaned_data.get('name')
+        student.name = form.cleaned_data.get("name")
         student.save()
 
-        next = self.request.POST.get('next') or reverse_lazy('students')
+        next = self.request.POST.get("next") or reverse_lazy("students")
         return HttpResponseRedirect(next)
 
+
 class StudentDelete(PermissionRequiredMixin, DeleteView):
-    permission_required = 'catalog.delete_student'
+    permission_required = "catalog.delete_student"
     model = Student
-    success_url = reverse_lazy('students')
+    success_url = reverse_lazy("students")
 
     def delete(self, request, *args, **kwargs):
         self.object = self.get_object()
@@ -382,24 +433,28 @@ class StudentDelete(PermissionRequiredMixin, DeleteView):
             self.object.delete()
 
         except ProtectedError:
-            context = self.get_context_data(object=self.object, error='Cannot delete in use object instance, delete all uses first')
+            context = self.get_context_data(
+                object=self.object,
+                error="Cannot delete in use object instance, delete all uses first",
+            )
             return self.render_to_response(context)
 
         return HttpResponseRedirect(success_url)
 
+
 # lesson
 class LessonCreate(PermissionRequiredMixin, CreateView):
-    permission_required = 'catalog.add_lesson'
-    template_name_suffix = '_create_form'
+    permission_required = "catalog.add_lesson"
+    template_name_suffix = "_create_form"
     form_class = LessonCreateForm
     model = Lesson
     # date_and_time and recording are filled programatically from
     # a provided CRAIG/GIARC link
 
     def form_valid(self, form):
-        link_data = form.cleaned_data.get('recording_processing_link')
-        direct_upload_file = form.cleaned_data.get('form_recording_file')
-        direct_upload_date_and_time = form.cleaned_data.get('form_date_and_time')
+        link_data = form.cleaned_data.get("recording_processing_link")
+        direct_upload_file = form.cleaned_data.get("form_recording_file")
+        direct_upload_date_and_time = form.cleaned_data.get("form_date_and_time")
 
         if link_data != None:
             # get data
@@ -417,46 +472,61 @@ class LessonCreate(PermissionRequiredMixin, CreateView):
             if pid == 0:
                 try:
                     # show PID (for debugging)
-                    print('################### DEBUG ##################')
-                    print('PID: ', os.getpid())
+                    print("################### DEBUG ##################")
+                    print("PID: ", os.getpid())
                     # download zip file from CRAIG/GIARC url
-                    print('download requested')
-                    open(f"{file_name}.lock", 'wt').write('download lock')
-                    for f in os.listdir('.'):
-                        if '.lock' in f:
+                    print("download requested")
+                    open(f"{file_name}.lock", "wt").write("download lock")
+                    for f in os.listdir("."):
+                        if ".lock" in f:
                             print(f)
-                    #r = urlretrieve(file_url, f"{file_name}.zip")
+                    # r = urlretrieve(file_url, f"{file_name}.zip")
                     ## changed the retrieval to urllib3 because craig api changed
                     http = urllib3.PoolManager()
                     print("||| URL ||| ", file_url)
 
-                    body = json.dumps({'container': 'zip', 'dynaudnorm': 'false', 'format': 'powersfxu'}).encode('utf-8')
+                    body = json.dumps(
+                        {
+                            "container": "zip",
+                            "dynaudnorm": "false",
+                            "format": "powersfxu",
+                        }
+                    ).encode("utf-8")
 
-                    p = http.request('POST', file_url, body=body, headers={'Content-Type': 'application/json'})
+                    p = http.request(
+                        "POST",
+                        file_url,
+                        body=body,
+                        headers={"Content-Type": "application/json"},
+                    )
 
                     if p.status == 200:
                         posted = True
                     else:
                         os.remove(f"{file_name}.lock")
-                        raise Exception('Craig server not reachable')
+                        raise Exception("Craig server not reachable")
                     ready = False
                     i = 0
                     while ready == False:
-                        r = http.request('GET', file_url, preload_content=False)
+                        r = http.request("GET", file_url, preload_content=False)
                         if r.status == 200:
                             info = json.loads(r.data)
-                            print('get_req: ', info)
-                            if info['ready'] == True:
-                                ready_file = info['download']['file']
+                            print("get_req: ", info)
+                            if info["ready"] == True:
+                                ready_file = info["download"]["file"]
                                 ready = True
                         else:
                             os.remove(f"{file_name}.lock")
-                            raise Exception('Craig/Giarc server not reachable')
+                            raise Exception("Craig/Giarc server not reachable")
 
                         if i >= 1800:
-                            print(">>>>> max iterations reached, Craig server non-responsive? <<<<<")
+                            print(
+                                ">>>>> max iterations reached, Craig server non-responsive? <<<<<"
+                            )
                             os.remove(f"{file_name}.lock")
-                            raise Exception('max iterations reached, Craig server non-responsive?')
+                            raise Exception(
+                                "max iterations reached, Craig server non-responsive?"
+                            )
                         i += 1
                         time.sleep(10)
 
@@ -465,8 +535,8 @@ class LessonCreate(PermissionRequiredMixin, CreateView):
                     download_url = f"{parsed.scheme}://{parsed.netloc}/dl/{ready_file}"
                     time.sleep(10)
 
-                    print('download started')
-                    r = http.request('GET', download_url, preload_content=False)
+                    print("download started")
+                    r = http.request("GET", download_url, preload_content=False)
                     if r.status == 200:
                         with open(f"{file_name}.zip", "wb") as out:
                             while True:
@@ -478,11 +548,11 @@ class LessonCreate(PermissionRequiredMixin, CreateView):
                         raise Exception("Craig/Giarc link broken")
                     r.release_conn()
                     # unzip
-                    print('download finished')
+                    print("download finished")
                     time.sleep(10)
-                    print('zip files on root:')
-                    for f in os.listdir('.'):
-                        if '.zip' in f or '.lock' in f:
+                    print("zip files on root:")
+                    for f in os.listdir("."):
+                        if ".zip" in f or ".lock" in f:
                             print(f)
                     try:
                         ZipFile(f"{file_name}.zip").extractall(file_name)
@@ -494,25 +564,29 @@ class LessonCreate(PermissionRequiredMixin, CreateView):
                     os.remove(f"{file_name}.zip")
                     os.remove(f"{file_name}.lock")
                     # process files to single track
-                    print('processing started')
-                    shutil.copyfile('process_recording.sh', f"{file_name}/process_recording.sh")
+                    print("processing started")
+                    shutil.copyfile(
+                        "process_recording.sh", f"{file_name}/process_recording.sh"
+                    )
                     # Heroku server only acceps standard Bourne/POSIX shell syntax (hence the use of 2>&1 for piping stdio)
                     os.system(f"sh {file_name}/process_recording.sh > /dev/null 2>&1")
-                    print('processing ended!!!')
+                    print("processing ended!!!")
                     ### results in file_name/craig.m4a file
                     # save lesson recording to database
                     lesson = Lesson.objects.get(date_and_time=lesson_date_and_time)
-                    with open(f"{file_name}/craig.m4a", 'rb') as recording:
-                        lesson.recording.save(f"{lesson.get_recording_stamp()}.m4a", File(recording))
+                    with open(f"{file_name}/craig.m4a", "rb") as recording:
+                        lesson.recording.save(
+                            f"{lesson.get_recording_stamp()}.m4a", File(recording)
+                        )
                 except Exception as e:
-                    print('PROBLEM SOMEWHERE')
+                    print("PROBLEM SOMEWHERE")
                     # cleanup
-                    print('cleanup started')
+                    print("cleanup started")
                     # remove downloaded files
                     os.system(f"rm -r {file_name}")
                     raise e
                 # cleanup
-                print('cleanup started')
+                print("cleanup started")
                 # remove downloaded files
                 os.system(f"rm -r {file_name}")
                 # terminate forked process to avoid problems
@@ -520,7 +594,7 @@ class LessonCreate(PermissionRequiredMixin, CreateView):
             else:
                 file_exists = False
                 while not file_exists:
-                    for name in os.listdir('.'):
+                    for name in os.listdir("."):
                         if file_name in name:
                             file_exists = True
 
@@ -541,16 +615,20 @@ class LessonCreate(PermissionRequiredMixin, CreateView):
             if pid == 0:
                 try:
                     # show PID (for debugging)
-                    print('################### DEBUG 2 ##################')
-                    print('PID: ', os.getpid())
+                    print("################### DEBUG 2 ##################")
+                    print("PID: ", os.getpid())
                     # create the file for view to display "processing" message
-                    open(file_name, 'wt').write('direct upload')
+                    open(file_name, "wt").write("direct upload")
                     # save lesson recording to database
-                    lesson = Lesson.objects.get(date_and_time=direct_upload_date_and_time)
-                    lesson.recording.save(f"{lesson.get_recording_stamp()}.m4a", File(direct_upload_file))
-                    print('finished direct upload of file')
+                    lesson = Lesson.objects.get(
+                        date_and_time=direct_upload_date_and_time
+                    )
+                    lesson.recording.save(
+                        f"{lesson.get_recording_stamp()}.m4a", File(direct_upload_file)
+                    )
+                    print("finished direct upload of file")
                 except Exception as e:
-                    print('PROBLEM SOMEWHERE 2')
+                    print("PROBLEM SOMEWHERE 2")
                     raise e
                 # cleanup
                 os.system(f"rm {file_name}")
@@ -560,7 +638,7 @@ class LessonCreate(PermissionRequiredMixin, CreateView):
             else:
                 file_exists = False
                 while not file_exists:
-                    for name in os.listdir('.'):
+                    for name in os.listdir("."):
                         if file_name in name:
                             file_exists = True
 
@@ -569,26 +647,30 @@ class LessonCreate(PermissionRequiredMixin, CreateView):
 
         return super(LessonCreate, self).form_valid(form)
 
+
 class LessonUpdate(PermissionRequiredMixin, UpdateView):
-    permission_required = 'catalog.change_lesson'
-    template_name_suffix = '_update_form'
+    permission_required = "catalog.change_lesson"
+    template_name_suffix = "_update_form"
     model = Lesson
-    fields = ['teacher', 'student', 'type', 'tags', 'date_and_time', 'recording']
+    fields = ["teacher", "student", "type", "tags", "date_and_time", "recording"]
 
     def form_valid(self, form):
-        new_recording = form.cleaned_data.get('recording')
-        new_date_and_time = form.cleaned_data.get('date_and_time')
+        new_recording = form.cleaned_data.get("recording")
+        new_date_and_time = form.cleaned_data.get("date_and_time")
 
         # save lesson date_and_time
         lesson = form.save(commit=False)
         lesson.date_and_time = new_date_and_time
         if type(new_recording) is InMemoryUploadedFile:
-            lesson.recording = File(new_recording, name=f"{lesson.get_recording_stamp()}.m4a")
+            lesson.recording = File(
+                new_recording, name=f"{lesson.get_recording_stamp()}.m4a"
+            )
         lesson.save()
 
         return super(LessonUpdate, self).form_valid(form)
 
+
 class LessonDelete(PermissionRequiredMixin, DeleteView):
-    permission_required = 'catalog.delete_lesson'
+    permission_required = "catalog.delete_lesson"
     model = Lesson
-    success_url = reverse_lazy('lessons')
+    success_url = reverse_lazy("lessons")

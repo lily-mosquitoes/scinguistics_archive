@@ -5,20 +5,27 @@ import django.db.models.deletion
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('catalog', '0008_auto_20210702_2106'),
+        ("catalog", "0008_auto_20210702_2106"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='lesson',
-            name='student',
-            field=models.ForeignKey(null=True, on_delete=django.db.models.deletion.PROTECT, to='catalog.student'),
+            model_name="lesson",
+            name="student",
+            field=models.ForeignKey(
+                null=True,
+                on_delete=django.db.models.deletion.PROTECT,
+                to="catalog.student",
+            ),
         ),
         migrations.AlterField(
-            model_name='lesson',
-            name='teacher',
-            field=models.ForeignKey(null=True, on_delete=django.db.models.deletion.PROTECT, to='catalog.teacher'),
+            model_name="lesson",
+            name="teacher",
+            field=models.ForeignKey(
+                null=True,
+                on_delete=django.db.models.deletion.PROTECT,
+                to="catalog.teacher",
+            ),
         ),
     ]

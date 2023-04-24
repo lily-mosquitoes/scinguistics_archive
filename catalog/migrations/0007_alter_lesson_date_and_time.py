@@ -4,15 +4,19 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('catalog', '0006_alter_lesson_recording'),
+        ("catalog", "0006_alter_lesson_recording"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='lesson',
-            name='date_and_time',
-            field=models.DateTimeField(blank=True, help_text='Date and time of the recording (autofilled from CRAIG/GIARC link)', null=True, unique=True),
+            model_name="lesson",
+            name="date_and_time",
+            field=models.DateTimeField(
+                blank=True,
+                help_text="Date and time of the recording (autofilled from CRAIG/GIARC link)",
+                null=True,
+                unique=True,
+            ),
         ),
     ]
