@@ -7,7 +7,7 @@
 {% endblock %}
 
 {% block content %}
-{% if user.groups.all.0.name == 'Staff Member' or lesson.teacher.name != 'Charles' or user.socialaccount_set.all.0.extra_data.pledge_level != None %}
+{% if user.groups.all.0.name == 'Staff Member' or lesson.teacher.name == 'Ama' or user.socialaccount_set.all.0.extra_data.pledge_level != None %}
   <h1><a href="{{ lesson.student.get_absolute_url }}">{{ lesson.student }}</a>'s lesson - {{ lesson.date_and_time }}</h1>
   <hr>
   {% if perms.catalog.change_lesson and perms.catalog.delete_lesson %}
