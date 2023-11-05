@@ -393,6 +393,7 @@ class LessonCreate(PermissionRequiredMixin, CreateView):
     template_name_suffix = '_create_form'
     form_class = LessonCreateForm
     model = Lesson
+    success_url = reverse_lazy('lessons')
     # date_and_time and recording are filled programatically from
     # a provided CRAIG/GIARC link
 
