@@ -5,15 +5,20 @@ import django_backblaze_b2.storage
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('catalog', '0005_auto_20210620_2317'),
+        ("catalog", "0005_auto_20210620_2317"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='lesson',
-            name='recording',
-            field=models.FileField(blank=True, help_text='Recording link from the CDN (autofilled from CRAIG/GIARC link)', null=True, storage=django_backblaze_b2.storage.BackblazeB2Storage, upload_to='uploads'),
+            model_name="lesson",
+            name="recording",
+            field=models.FileField(
+                blank=True,
+                help_text="Recording link from the CDN (autofilled from CRAIG/GIARC link)",
+                null=True,
+                storage=django_backblaze_b2.storage.BackblazeB2Storage,
+                upload_to="uploads",
+            ),
         ),
     ]

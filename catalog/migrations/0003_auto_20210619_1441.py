@@ -4,30 +4,32 @@ from django.db import migrations
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('catalog', '0002_alter_tags_options'),
+        ("catalog", "0002_alter_tags_options"),
     ]
 
     operations = [
         migrations.AlterModelOptions(
-            name='lesson',
-            options={'permissions': (('can_edit', 'Can edit Lesson info'),)},
+            name="lesson",
+            options={"permissions": (("can_edit", "Can edit Lesson info"),)},
         ),
         migrations.AlterModelOptions(
-            name='student',
-            options={'permissions': (('can_edit', 'Can edit Student info'),)},
+            name="student",
+            options={"permissions": (("can_edit", "Can edit Student info"),)},
         ),
         migrations.AlterModelOptions(
-            name='tags',
-            options={'permissions': (('can_edit', 'Can edit Tag info'),), 'verbose_name_plural': 'Tags'},
+            name="tags",
+            options={
+                "permissions": (("can_edit", "Can edit Tag info"),),
+                "verbose_name_plural": "Tags",
+            },
         ),
         migrations.AlterModelOptions(
-            name='teacher',
-            options={'permissions': (('can_edit', 'Can edit Teacher info'),)},
+            name="teacher",
+            options={"permissions": (("can_edit", "Can edit Teacher info"),)},
         ),
         migrations.AlterModelOptions(
-            name='type',
-            options={'permissions': (('can_edit', 'Can edit Lesson Type info'),)},
+            name="type",
+            options={"permissions": (("can_edit", "Can edit Lesson Type info"),)},
         ),
     ]

@@ -4,30 +4,37 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('catalog', '0007_alter_lesson_date_and_time'),
+        ("catalog", "0007_alter_lesson_date_and_time"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='student',
-            name='name',
-            field=models.CharField(help_text='Enter a new student', max_length=200, unique=True),
+            model_name="student",
+            name="name",
+            field=models.CharField(
+                help_text="Enter a new student", max_length=200, unique=True
+            ),
         ),
         migrations.AlterField(
-            model_name='tag',
-            name='name',
-            field=models.CharField(help_text='Enter a new tag name', max_length=100, unique=True),
+            model_name="tag",
+            name="name",
+            field=models.CharField(
+                help_text="Enter a new tag name", max_length=100, unique=True
+            ),
         ),
         migrations.AlterField(
-            model_name='teacher',
-            name='name',
-            field=models.CharField(help_text='Enter a new teacher', max_length=200, unique=True),
+            model_name="teacher",
+            name="name",
+            field=models.CharField(
+                help_text="Enter a new teacher", max_length=200, unique=True
+            ),
         ),
         migrations.AlterField(
-            model_name='type',
-            name='name',
-            field=models.CharField(help_text='Enter a new lesson type', max_length=100, unique=True),
+            model_name="type",
+            name="name",
+            field=models.CharField(
+                help_text="Enter a new lesson type", max_length=100, unique=True
+            ),
         ),
     ]

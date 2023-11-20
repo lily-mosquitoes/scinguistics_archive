@@ -4,14 +4,13 @@ from django.db import migrations
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('catalog', '0001_initial'),
+        ("catalog", "0001_initial"),
     ]
 
     operations = [
         migrations.AlterModelOptions(
-            name='tags',
-            options={'verbose_name_plural': 'Tags'},
+            name="tags",
+            options={"verbose_name_plural": "Tags"},
         ),
     ]

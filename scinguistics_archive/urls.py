@@ -15,26 +15,29 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
+
 # Use include() to add paths from applications
 from django.urls import include
+
 # Use RedirectView() to redirect the base url to an application
 from django.views.generic import RedirectView
+
 # Use static() to add url mapping to serve static files during development (only)
 from django.conf import settings
 from django.conf.urls.static import static
 
 urlpatterns = [
-    path('admin/', admin.site.urls),
+    path("admin/", admin.site.urls),
     # applications
-    path('catalog/', include('catalog.urls')),
+    path("catalog/", include("catalog.urls")),
     # redirections
-    path('', RedirectView.as_view(url='catalog/', permanent=True)),
+    path("", RedirectView.as_view(url="catalog/", permanent=True)),
     # static files
     *static(settings.STATIC_URL, document_root=settings.STATIC_ROOT),
     # authentication (auth.urls needed for 'LOGOUT_REDIRECT_URL' in settings.py to work properly, used in 'base_generic.html for url logout)
-    path('accounts/', include('django.contrib.auth.urls')),
+    path("accounts/", include("django.contrib.auth.urls")),
     # django-allauth - for patreon authentication
-    path('accounts/', include('allauth.urls')),
+    path("accounts/", include("allauth.urls")),
     # backblaze b2
-    path('', include('django_backblaze_b2.urls')),
+    path("", include("django_backblaze_b2.urls")),
 ]
