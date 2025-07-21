@@ -3,6 +3,7 @@ venv
 
 # env variables
 env_variables.sh
+.env
 
 # interpreter files
 __pycache__
