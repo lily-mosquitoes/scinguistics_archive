@@ -431,7 +431,7 @@ class LessonCreate(PermissionRequiredMixin, CreateView):
                     http = urllib3.PoolManager()
                     print("||| URL ||| ", file_url)
 
-                    body = json.dumps({'container': 'zip', 'dynaudnorm': 'false', 'format': 'powersfxu'}).encode('utf-8')
+                    body = json.dumps({'type': 'recording', 'options': {'format': 'powersfxu'}}).encode('utf-8')
 
                     p = http.request('POST', file_url, body=body, headers={'Content-Type': 'application/json'})
 
@@ -447,8 +447,8 @@ class LessonCreate(PermissionRequiredMixin, CreateView):
                         if r.status == 200:
                             info = json.loads(r.data)
                             print('get_req: ', info)
-                            if info['ready'] == True:
-                                ready_file = info['download']['file']
+                            if info['job']['status'] == 'complete':
+                                ready_file = info['job']['outputFileName']
                                 ready = True
                         else:
                             os.remove(f"{file_name}.lock")

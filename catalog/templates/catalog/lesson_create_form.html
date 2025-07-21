@@ -82,13 +82,13 @@
           var url = document.getElementById("id_recording_processing_link").value;
 
           const parsed = new URL(url);
-          const newurl = `${parsed.protocol}//${parsed.host}/api/recording/${parsed.pathname.split("/")[2]}?key=${parsed.searchParams.get('key')}`;
+          const newurl = `${parsed.protocol}//${parsed.host}/api/v1/recordings/${parsed.pathname.split("/")[2]}?key=${parsed.searchParams.get('key')}`;
 
           var xhttp = new XMLHttpRequest();
           xhttp.onreadystatechange = function() {
             if (this.readyState == 4 && this.status == 200) {
                 var res = JSON.parse(this.responseText);
-                var start = res.info.startTime;
+                var start = res.recording.startTime;
 
                 document.getElementById("startTime").innerHTML = "start time: " + new Date(start).toString();
             } else if (this.readyState == 4 && this.status != 200) {
@@ -105,7 +105,7 @@
       function duration() {
           var url = document.getElementById("id_recording_processing_link").value;
           const parsed = new URL(url);
-          const newurl = `${parsed.protocol}//${parsed.host}/api/recording/${parsed.pathname.split("/")[2]}/duration?key=${parsed.searchParams.get('key')}`
+          const newurl = `${parsed.protocol}//${parsed.host}/api/v1/recordings/${parsed.pathname.split("/")[2]}?key=${parsed.searchParams.get('key')}`
 
           var xhttp = new XMLHttpRequest();
           xhttp.onreadystatechange = function() {
@@ -132,7 +132,7 @@
       function users() {
           var url = document.getElementById("id_recording_processing_link").value;
           const parsed = new URL(url);
-          const newurl = `${parsed.protocol}//${parsed.host}/api/recording/${parsed.pathname.split("/")[2]}/users?key=${parsed.searchParams.get('key')}`
+          const newurl = `${parsed.protocol}//${parsed.host}/api/v1/recordings/${parsed.pathname.split("/")[2]}?key=${parsed.searchParams.get('key')}`
 
           var xhttp = new XMLHttpRequest();
           xhttp.onreadystatechange = function() {

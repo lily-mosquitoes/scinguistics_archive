@@ -103,7 +103,7 @@ class LessonCreateForm(forms.ModelForm):
             query = parse_qs(parsed.query)
             rec_n = parsed.path.split("/")[-1]
             rec_key = query['key'][0]
-            base_url = f"{parsed.scheme}://{parsed.netloc}/api/rec/{rec_n}?key={rec_key}"
+            base_url = f"{parsed.scheme}://{parsed.netloc}/api/v1/recordings/{rec_n}?key={rec_key}"
             print('base_url: ', base_url)
 
             http = urllib3.PoolManager()
@@ -144,7 +144,7 @@ class LessonCreateForm(forms.ModelForm):
             # get file
             # file_url = f"{base_url}&fetch=cooked&format=powersfxu"
             # file_url = f"{parsed.scheme}://{parsed.netloc}/api/recording/{rec_n}/cook/run?key={rec_key}&format=powersfxu&container=zip&dynaudnorm=false" # API CHANGED AGAIN
-            file_url = f"{parsed.scheme}://{parsed.netloc}/api/recording/{rec_n}/cook?key={rec_key}"
+            file_url = f"{parsed.scheme}://{parsed.netloc}/api/v1/recordings/{rec_n}/job?key={rec_key}"
             # print('file_url: ', file_url)
             file_name = f"lesson-recording-{lesson_date_and_time.isoformat()}"
         else:
