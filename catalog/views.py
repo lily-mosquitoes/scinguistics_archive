@@ -487,6 +487,7 @@ class LessonCreate(PermissionRequiredMixin, CreateView):
                             print(f)
                     try:
                         ZipFile(f"{file_name}.zip").extractall(file_name)
+                        print('FILENAME:', file_name)
                     except Exception as e:
                         print("zipfile extraction failes")
                         os.remove(f"{file_name}.zip")
@@ -506,7 +507,7 @@ class LessonCreate(PermissionRequiredMixin, CreateView):
                     with open(f"{file_name}/craig.m4a", 'rb') as recording:
                         lesson.recording.save(f"{lesson.get_recording_stamp()}.m4a", File(recording))
                 except Exception as e:
-                    print('PROBLEM SOMEWHERE')
+                    print('PROBLEM SOMEWHERE', e)
                     # cleanup
                     print('cleanup started')
                     # remove downloaded files

@@ -105,7 +105,7 @@
       function duration() {
           var url = document.getElementById("id_recording_processing_link").value;
           const parsed = new URL(url);
-          const newurl = `${parsed.protocol}//${parsed.host}/api/v1/recordings/${parsed.pathname.split("/")[2]}?key=${parsed.searchParams.get('key')}`
+          const newurl = `${parsed.protocol}//${parsed.host}/api/v1/recordings/${parsed.pathname.split("/")[2]}/duration?key=${parsed.searchParams.get('key')}`
 
           var xhttp = new XMLHttpRequest();
           xhttp.onreadystatechange = function() {
