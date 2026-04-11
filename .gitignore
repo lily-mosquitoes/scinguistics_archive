@@ -1,5 +1,5 @@
 # venv
-venv
+venv*
 
 # env variables
 env_variables.sh
