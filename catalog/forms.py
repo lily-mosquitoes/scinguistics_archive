@@ -109,38 +109,42 @@ class LessonCreateForm(forms.ModelForm):
             http = urllib3.PoolManager()
             r = http.request('GET', base_url)
 
-            html = r.data.decode('utf-8')
+            reply = r.data.decode('utf-8')
+
+            json_reply = json.loads(reply)
+
+            start_time = json_reply["recording"]["startTime"]
         else:
             raise ValidationError('Invalid CRAIG/GIARC URL')
 
-        if 'Invalid ID' not in str(html):
+        if 'Invalid ID' not in str(reply):
             # get info
             # info_url = f"{base_url}&fetch=info"
             ## changed because of craig api change
-            info_url = f"{parsed.scheme}://{parsed.netloc}/api/recording/{rec_n}/.txt?key={rec_key}"
-            print('info_url: ', info_url)
-
-            http = urllib3.PoolManager()
-            r = http.request('GET', info_url, preload_content=False)
-            with open(f"{rec_n}.txt", "wb") as out:
-                while True:
-                    data = r.read()
-                    if not data:
-                        break
-                    out.write(data)
-            r.release_conn()
+            # info_url = f"{parsed.scheme}://{parsed.netloc}/api/recording/{rec_n}/.txt?key={rec_key}"
+            # print('info_url: ', info_url)
+            #
+            # http = urllib3.PoolManager()
+            # r = http.request('GET', info_url, preload_content=False)
+            # with open(f"{rec_n}.txt", "wb") as out:
+            #     while True:
+            #         data = r.read()
+            #         if not data:
+            #             break
+            #         out.write(data)
+            # r.release_conn()
 
             # info = json.loads(urlopen(info_url).read())
-            info = []
-            with open(f"{rec_n}.txt", "rt") as f:
-                for line in f.read().split("\n"):
-                    if "Start time" in line:
-                        info.extend(line.split("\t"))
-                        break
-            info = info[-1]
-            os.system(f"rm {rec_n}.txt")
+            # info = []
+            # with open(f"{rec_n}.txt", "rt") as f:
+            #     for line in f.read().split("\n"):
+            #         if "Start time" in line:
+            #             info.extend(line.split("\t"))
+            #             break
+            # info = info[-1]
+            # os.system(f"rm {rec_n}.txt")
             # lesson_date_and_time = datetime.fromisoformat(info['startTime'].replace('Z', '+00:00'))
-            lesson_date_and_time = datetime.fromisoformat(info.replace('Z', '+00:00'))
+            lesson_date_and_time = datetime.fromisoformat(start_time.replace('Z', '+00:00'))
             # get file
             # file_url = f"{base_url}&fetch=cooked&format=powersfxu"
             # file_url = f"{parsed.scheme}://{parsed.netloc}/api/recording/{rec_n}/cook/run?key={rec_key}&format=powersfxu&container=zip&dynaudnorm=false" # API CHANGED AGAIN
